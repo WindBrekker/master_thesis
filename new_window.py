@@ -19,10 +19,6 @@ from PyQt6.QtWidgets import (
     QComboBox,
     QCheckBox,
 )
-
-import sys
-from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QVBoxLayout, QWidget, QLabel, QLineEdit
-import utils
 import mode3
 import mode2
 import mode1
@@ -39,8 +35,9 @@ class Color(QWidget):
         self.setPalette(palette)
 
 class NewWindow(QMainWindow):
-    def __init__(self):
+    def __init__(self, title):
         super().__init__()
+        self.setWindowTitle(title)
         self.showMaximized
         
     #main layout

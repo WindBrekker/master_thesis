@@ -4,25 +4,21 @@ import utils
 import mode3
 import mode2
 import mode1
-import new_window
 
 class StartWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         
-        self.mode1 = "Point mode"
-        self.mode2 = "Snip mode"
-        self.mode3 = "Full map mode"
+        self.mode1 = "Point"
+        self.mode2 = "Snip"
+        self.mode3 = "Full map"
         
         self.setWindowTitle("SliceQuant")
         
         # Create buttons
         self.button1 = QPushButton(self.mode1)
-        self.button1.setCheckable(True)
         self.button2 = QPushButton(self.mode2)
-        self.button2.setCheckable(True)
         self.button3 = QPushButton(self.mode3)
-        self.button3.setCheckable(True)
         self.next_button = QPushButton("Next")
         
         # Connect buttons to the methods
@@ -33,7 +29,7 @@ class StartWindow(QMainWindow):
         
         # Create label
         self.start_window_label = QLabel("Choose the work mode")
-        self.input_info_label = QLabel("Enter the appropriate values and (optional) used nomenclature", self)
+        self.input_info_label = QLabel("Enter the appropriate values and (optional) used nomenclature",self)
         
         # Create edit lines
         self.Main_folder = QLineEdit(self)
@@ -73,27 +69,15 @@ class StartWindow(QMainWindow):
         
         # Set the central widget
         self.setCentralWidget(container)
-        
     
     def open_window1(self):
         self.mode_number = 1
-        self.button1.setChecked(True)
-        self.button2.setChecked(False)
-        self.button3.setChecked(False)
 
     def open_window2(self):
         self.mode_number = 2
-        self.button1.setChecked(False)
-        self.button2.setChecked(True)
-        self.button3.setChecked(False)
-
 
     def open_window3(self):
         self.mode_number = 3
-        self.button1.setChecked(False)
-        self.button2.setChecked(False)
-        self.button3.setChecked(True)
-
         
     def open_next_window(self):
         self.main_folder_path = str(self.Main_folder.text())
@@ -112,10 +96,11 @@ class StartWindow(QMainWindow):
             self.zeropeak_name = "zeropeak"
         if self.scatter_name == "":
             self.scatter_name = "scater"
-        if self.sample_matrix_name == "":
+        if self.sample_matrix_name== "":
             self.sample_matrix_name = "sample_matrix"
         if self.treshhold_value == "":
             self.treshhold_value = 10
+        
         
         print(self.pixel_size_value)
         print(self.inputfile_name)
@@ -124,17 +109,13 @@ class StartWindow(QMainWindow):
         print(self.treshhold_value)
         print(self.main_folder_path)
         
+        
         if not (self.main_folder_path == ""):
-            if self.mode_number == 1:
-                self.new_window = new_window.NewWindow(self.mode1)
-                mode1.main(self.new_window, self.mode1, self.main_folder_path, self.pixel_size_value, self.inputfile_name, self.zeropeak_name, self.scatter_name, self.sample_matrix_name, self.treshhold_value)
-            elif self.mode_number == 2:
-                self.new_window = new_window.NewWindow(self.mode2)
-                self.new_window.show()
-                mode2.main(self, self.mode2, self.main_folder_path, self.pixel_size_value, self.inputfile_name, self.zeropeak_name, self.scatter_name, self.sample_matrix_name, self.treshhold_value)
-            elif self.mode_number == 3:
-                self.new_window = new_window.NewWindow(self.mode3)
-                self.new_window.show()
-                mode3.main(self, self.mode3, self.main_folder_path, self.pixel_size_value, self.inputfile_name, self.zeropeak_name, self.scatter_name, self.sample_matrix_name, self.treshhold_value)
+            if (self.mode_number == 1):
+                mode1.main(self.mode1, self.main_folder_path, self.pixel_size_value, self.inputfile_name, self.zeropeak_name, self.scatter_name, self.sample_matrix_name, self.treshhold_value)
+            elif (self.mode_number == 2):
+                mode2.main(self.mode2, self.main_folder_path, self.pixel_size_value, self.inputfile_name, self.zeropeak_name, self.scatter_name, self.sample_matrix_name, self.treshhold_value)
+            elif (self.mode_number == 3):
+                mode3.main(self.mode3, self.main_folder_path, self.pixel_size_value, self.inputfile_name, self.zeropeak_name, self.scatter_name, self.sample_matrix_name, self.treshhold_value)
         else:
-            print("There's an empty value in Main Folder Path line. Fix it before next attempt")
+            print("There's an empty value in Main Folder Path line. Fix it before next attepmt")
