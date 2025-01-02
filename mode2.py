@@ -10,7 +10,7 @@ from PyQt6.QtWidgets import QApplication
 import start_window
 import new_window
 
-def main(window, title, main_folder_path, pixel_size_value, inputfile_name, zeropeak_name, scatter_name, sample_matrix_name, treshhold_value):
+def main(window, start_window_instance, title, main_folder_path, pixel_size_value, inputfile_name, zeropeak_name, scatter_name, sample_matrix_name, treshhold_value, spectrum):
     window.show()
 
 

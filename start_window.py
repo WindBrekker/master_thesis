@@ -1,23 +1,55 @@
+# start_window.py
 import sys
-from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QVBoxLayout, QWidget, QLabel, QLineEdit
+from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QVBoxLayout, QWidget, QLabel, QLineEdit, QCheckBox, QHBoxLayout
 import utils
 import mode3
 import mode2
 import mode1
 import new_window
 
+
+class ToggleSwitch(QCheckBox):
+    def __init__(self):
+        super().__init__()
+        self.setFixedSize(30, 15)
+        self.setStyleSheet("""
+            QCheckBox {
+                background-color: #ccc;
+                border-radius: 15px;
+                width: 30px;
+                height: 15px;
+                padding: 0px;
+            }
+            QCheckBox::indicator {
+                width: 15px;
+                height: 15px;
+                border-radius: 15px;
+            }
+            QCheckBox::indicator:checked {
+                background-color: #3498db; /* Blue */
+                margin-left: 15px;
+            }
+            QCheckBox::indicator:unchecked {
+                background-color: #e74c3c; /* Red */
+                margin-left: 0px;
+            }
+        """)
+        self.setChecked(False)  # Start in the "Red" state
+
 class StartWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         
-        self.mode1 = "Point mode"
+        self.mode1 = "Full map mode"
         self.mode2 = "Snip mode"
-        self.mode3 = "Full map mode"
+        self.mode3 = "Point mode"
         
         self.setWindowTitle("SliceQuant")
         
         # Create buttons
         self.button1 = QPushButton(self.mode1)
+        
+        
         self.button1.setCheckable(True)
         self.button2 = QPushButton(self.mode2)
         self.button2.setCheckable(True)
@@ -34,6 +66,9 @@ class StartWindow(QMainWindow):
         # Create label
         self.start_window_label = QLabel("Choose the work mode")
         self.input_info_label = QLabel("Enter the appropriate values and (optional) used nomenclature", self)
+        self.checkbox_label = QLabel("Choose spectrum mode", self)
+        self.poli_spectrum_label = QLabel("Polichromatic spectrum")
+        self.mono_spectrum_label = QLabel("Monochromatic spectrum")
         
         # Create edit lines
         self.Main_folder = QLineEdit(self)
@@ -51,12 +86,24 @@ class StartWindow(QMainWindow):
         self.Treshold = QLineEdit(self)
         self.Treshold.setPlaceholderText("10")
         
+        # Checkboxes
+        self.checkbox1 = ToggleSwitch()
+        self.checkbox1.toggled.connect(lambda: self.set_spectrum_mode())
+        
         # Layouts
+        sublayout = QHBoxLayout()
+        sublayout.addWidget(self.poli_spectrum_label)
+        sublayout.addStretch(1)
+        sublayout.addWidget(self.checkbox1)
+        sublayout.addStretch(1) 
+        sublayout.addWidget(self.mono_spectrum_label)
         layout = QVBoxLayout()
         layout.addWidget(self.start_window_label)
         layout.addWidget(self.button1)
         layout.addWidget(self.button2)
         layout.addWidget(self.button3)
+        layout.addWidget(self.checkbox_label)
+        layout.addLayout(sublayout)
         layout.addWidget(self.input_info_label)
         layout.addWidget(self.Main_folder)
         layout.addWidget(self.Pixel)
@@ -67,6 +114,9 @@ class StartWindow(QMainWindow):
         layout.addWidget(self.Treshold)
         layout.addWidget(self.next_button)
         
+        
+
+        
         # Set the layout to a QWidget
         container = QWidget()
         container.setLayout(layout)
@@ -74,6 +124,9 @@ class StartWindow(QMainWindow):
         # Set the central widget
         self.setCentralWidget(container)
         
+    
+    def set_spectrum_mode(self):
+        self.spectrum = "Mono" if self.checkbox1.isChecked() else "Poli"
     
     def open_window1(self):
         self.mode_number = 1
@@ -127,14 +180,20 @@ class StartWindow(QMainWindow):
         if not (self.main_folder_path == ""):
             if self.mode_number == 1:
                 self.new_window = new_window.NewWindow(self.mode1)
-                mode1.main(self.new_window, self.mode1, self.main_folder_path, self.pixel_size_value, self.inputfile_name, self.zeropeak_name, self.scatter_name, self.sample_matrix_name, self.treshhold_value)
+                mode1.main(self.new_window, self, self.mode1, self.main_folder_path, self.pixel_size_value, self.inputfile_name, self.zeropeak_name, self.scatter_name, self.sample_matrix_name, self.treshhold_value, self.spectrum)
             elif self.mode_number == 2:
                 self.new_window = new_window.NewWindow(self.mode2)
                 self.new_window.show()
-                mode2.main(self, self.mode2, self.main_folder_path, self.pixel_size_value, self.inputfile_name, self.zeropeak_name, self.scatter_name, self.sample_matrix_name, self.treshhold_value)
+                mode2.main(self.new_window, self, self.mode2, self.main_folder_path, self.pixel_size_value, self.inputfile_name, self.zeropeak_name, self.scatter_name, self.sample_matrix_name, self.treshhold_value, self.spectrum)
             elif self.mode_number == 3:
                 self.new_window = new_window.NewWindow(self.mode3)
                 self.new_window.show()
-                mode3.main(self, self.mode3, self.main_folder_path, self.pixel_size_value, self.inputfile_name, self.zeropeak_name, self.scatter_name, self.sample_matrix_name, self.treshhold_value)
+                mode3.main(self.new_window, self, self.mode3, self.main_folder_path, self.pixel_size_value, self.inputfile_name, self.zeropeak_name, self.scatter_name, self.sample_matrix_name, self.treshhold_value, self.spectrum)
         else:
             print("There's an empty value in Main Folder Path line. Fix it before next attempt")
+
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    main_window = StartWindow()
+    main_window.show()
+    sys.exit(app.exec())

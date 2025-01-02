@@ -99,8 +99,8 @@ class NewWindow(QMainWindow):
         Data_layout.addLayout(saving_button_layout,1)
         
         self.Ci_label = QLabel("Save the concentration maps as:",self)
-        self.SM_label = QLabel("Save the sample mass per unit area as:",self)
-        self.SMi_label = QLabel("Save the element mass per unit area as:",self)
+        self.SM_label = QLabel("Save the sample mass per unit area map as:",self)
+        self.SMi_label = QLabel("Save the element mass per unit area map as:",self)
         self.Ci_unit_label = QLabel("   With units:",self)
         self.SM_unit_label = QLabel("   With units:",self)
         self.SMi_unit_label = QLabel("  With units:",self)
@@ -130,17 +130,10 @@ class NewWindow(QMainWindow):
 
         #Widgets
         #QLabel
+        self.choose_main_folder_label = QLabel("Choose the main folder")
         self.colorbox_label = QLabel("Choose the heatmap colors")
-        self.Treshold_txt_label = QLabel("Treshold = ",self)
-        self.Treshold_unit_label = QLabel("%",self)
-        self.pixel_size_txt_label = QLabel("Pixel size = ",self)
-        self.pixel_size_unit_label = QLabel("[um]",self)
-
-        
         self.sample_picture_label = QLabel(self)
         self.sample_picture_label2 = QLabel(self)
-        
-        
         self.element_name_label = QLabel(self)
         self.element_name_label.setText("None")
         self.Cursor_data_label = QLabel("Cursor data",self)
@@ -161,33 +154,13 @@ class NewWindow(QMainWindow):
         self.Mask_label = QLabel("Mask:",self)
         self.Mask_value_label2 = QLabel("Current element:",self)
         self.Mask_value_label = QLabel("None",self)
-        self.input_info_label = QLabel("Enter the appropriate values*",self)
-        self.names_inof_label = QLabel("(optional) Enter used nomenclature",self)
-
-
-
-        # #QLineEdit
-        self.Main_folder = QLineEdit(self)
-        self.Main_folder.setPlaceholderText("Main folder path")
-        self.Pixel = QLineEdit(self)
-        self.Pixel.setPlaceholderText("1000")
-        self.Inputfile = QLineEdit(self)
-        self.Inputfile.setPlaceholderText("inputfile")
-        self.Zeropeak = QLineEdit(self)
-        self.Zeropeak.setPlaceholderText("zeropeak")
-        self.Scater = QLineEdit(self)    
-        self.Scater.setPlaceholderText("scater")
-        self.SampMatrix = QLineEdit(self)
-        self.SampMatrix.setPlaceholderText("sample_matrix")
-        self.Treshold = QLineEdit(self)
-        self.Treshold.setPlaceholderText("10")
 
         # #QComboBox
         self.colorbar_combobox = QComboBox(self)
         self.colorbar_combobox.addItems(["hot","viridis","plasma","inferno", "magma", "cividis", "coolwarm", "YlGnBu", "RdYlBu", "jet", "copper"])
+        self.colorbar_combobox.setPlaceholderText("Choose colorbar")
         self.Prefere_folder = QComboBox(self)
-        self.Prefere_folder.setEnabled(False)
-        self.Prefere_folder.setPlaceholderText("Confirm identifiers first")
+        self.Prefere_folder.setPlaceholderText("Choose prefered folder")
 
         # #QCheckBox
         self.Ci_dat_checkbox = QCheckBox(".dat",self)
@@ -234,36 +207,17 @@ class NewWindow(QMainWindow):
         self.quantify_button = QPushButton("Quantify", self)
         self.quantify_button.setEnabled(False)
 
-        self.confirm_names_button = QPushButton("Confirm",self)
         self.confirm_saving_button = QPushButton("Confirm",self)
         
-        self.saving_button = QPushButton("Exit",self)
+        self.saving_button = QPushButton("Save and Exit",self)
         self.saving_button.setEnabled(False)
 
 
         # #Adding widgets
-        text_layout.addWidget(self.input_info_label)
-        main_folder_layout.addWidget(self.Main_folder)
-        pixel_size_layout.addWidget(self.Treshold_txt_label)
-        pixel_size_layout.addWidget(self.Treshold)
-        pixel_size_layout.addWidget(self.Treshold_unit_label)
-        pixel_size_layout.addWidget(self.pixel_size_txt_label)
-        pixel_size_layout.addWidget(self.Pixel)
-        pixel_size_layout.addWidget(self.pixel_size_unit_label)
-
-        Names_layout.addWidget(self.names_inof_label)
-        Names_layout.addWidget(self.Inputfile)
-        Names_layout.addWidget(self.Zeropeak)
-        Names_layout.addWidget(self.Scater)
-        Names_layout.addWidget(self.SampMatrix)
         Names_layout.addWidget(self.colorbox_label)
         Names_layout.addWidget(self.colorbar_combobox)
-        Names_layout.addWidget(self.confirm_names_button)
         Names_layout.addWidget(self.Prefere_folder)
         
-        
-        
-
         saving_checkbox_Ci1_layout.addWidget(self.Ci_dat_checkbox)
         saving_checkbox_Ci1_layout.addWidget(self.Ci_bmp_checkbox)
         saving_checkbox_Ci2_layout.addWidget(self.Ci_png_checkbox)

@@ -15,3 +15,12 @@ def main():
 
 if __name__ == "__main__":
     main()
+    
+    
+#Program działa na duzych mapach
+#Point mode
+#Snip mode
+#GUI - uruchomić i przetestować z userem
+###----------------------------------------- DO LUTEGO.
+#Dane z synchrotronu (nie ma lifetime - jeśli nie ma pliku to nie dzielimy)
+#Pisanie pracy + szlifowanie kodu
