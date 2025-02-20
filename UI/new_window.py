@@ -1,7 +1,7 @@
 import sys
 import shutil
 import os
-import utils
+import backend.utils as utils
 import numpy as np
 from pathlib import Path
 from os.path import exists as file_exists
@@ -159,8 +159,8 @@ class NewWindow(QMainWindow):
         self.colorbar_combobox = QComboBox(self)
         self.colorbar_combobox.addItems(["hot","viridis","plasma","inferno", "magma", "cividis", "coolwarm", "YlGnBu", "RdYlBu", "jet", "copper"])
         self.colorbar_combobox.setPlaceholderText("Choose colorbar")
-        self.Prefere_folder = QComboBox(self)
-        self.Prefere_folder.setPlaceholderText("Choose prefered folder")
+        self.prefere_folder_combobox = QComboBox(self)
+        self.prefere_folder_combobox.setPlaceholderText("Choose prefered folder")
 
         # #QCheckBox
         self.Ci_dat_checkbox = QCheckBox(".dat",self)
@@ -199,13 +199,10 @@ class NewWindow(QMainWindow):
 
         # #QPushButton
         self.previous_element_button = QPushButton("<", self)
-        self.previous_element_button.setEnabled(False)
         self.next_element_button = QPushButton(">", self)
-        self.next_element_button.setEnabled(False)
         self.use_for_mask_button = QPushButton("Use for mask", self)
-        self.use_for_mask_button.setEnabled(False)
         self.quantify_button = QPushButton("Quantify", self)
-        self.quantify_button.setEnabled(False)
+        
 
         self.confirm_saving_button = QPushButton("Confirm",self)
         
@@ -216,7 +213,7 @@ class NewWindow(QMainWindow):
         # #Adding widgets
         Names_layout.addWidget(self.colorbox_label)
         Names_layout.addWidget(self.colorbar_combobox)
-        Names_layout.addWidget(self.Prefere_folder)
+        Names_layout.addWidget(self.prefere_folder_combobox)
         
         saving_checkbox_Ci1_layout.addWidget(self.Ci_dat_checkbox)
         saving_checkbox_Ci1_layout.addWidget(self.Ci_bmp_checkbox)

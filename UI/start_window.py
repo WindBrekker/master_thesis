@@ -1,7 +1,7 @@
 # start_window.py
 import sys
 from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QVBoxLayout, QWidget, QLabel, QLineEdit, QCheckBox, QHBoxLayout
-import utils
+import backend.utils as utils
 import mode3
 import mode2
 import mode1
@@ -43,6 +43,7 @@ class StartWindow(QMainWindow):
         self.mode1 = "Full map mode"
         self.mode2 = "Snip mode"
         self.mode3 = "Point mode"
+        self.spectrum = "Mono"
         
         self.setWindowTitle("SliceQuant")
         
@@ -56,6 +57,7 @@ class StartWindow(QMainWindow):
         self.button3 = QPushButton(self.mode3)
         self.button3.setCheckable(True)
         self.next_button = QPushButton("Next")
+        self.next_button.setDisabled(True)
         
         # Connect buttons to the methods
         self.button1.clicked.connect(self.open_window1)
@@ -76,13 +78,13 @@ class StartWindow(QMainWindow):
         self.Pixel = QLineEdit(self)
         self.Pixel.setPlaceholderText("1000")
         self.Inputfile = QLineEdit(self)
-        self.Inputfile.setPlaceholderText("inputfile")
+        self.Inputfile.setPlaceholderText("inputfile.txt")
         self.Zeropeak = QLineEdit(self)
-        self.Zeropeak.setPlaceholderText("zeropeak")
+        self.Zeropeak.setPlaceholderText("zeropeak_coefficients.txt")
         self.Scater = QLineEdit(self)    
-        self.Scater.setPlaceholderText("scater")
+        self.Scater.setPlaceholderText("scater_coefficients.txt")
         self.SampMatrix = QLineEdit(self)
-        self.SampMatrix.setPlaceholderText("sample_matrix")
+        self.SampMatrix.setPlaceholderText("sample_matrix.txt")
         self.Treshold = QLineEdit(self)
         self.Treshold.setPlaceholderText("10")
         
@@ -123,22 +125,33 @@ class StartWindow(QMainWindow):
         
         # Set the central widget
         self.setCentralWidget(container)
+
         
     
     def set_spectrum_mode(self):
-        self.spectrum = "Mono" if self.checkbox1.isChecked() else "Poli"
+        if self.checkbox1.isChecked():
+            self.spectrum = "Mono"
+            self.Zeropeak.setDisabled(True)   
+        else: 
+            self.spectrum = "Poli"
+            self.Zeropeak.setDisabled(False)
+        
     
     def open_window1(self):
         self.mode_number = 1
         self.button1.setChecked(True)
         self.button2.setChecked(False)
         self.button3.setChecked(False)
+        self.next_button.setDisabled(False)
 
     def open_window2(self):
         self.mode_number = 2
         self.button1.setChecked(False)
         self.button2.setChecked(True)
         self.button3.setChecked(False)
+        self.next_button.setDisabled(False)
+
+        
 
 
     def open_window3(self):
@@ -146,6 +159,8 @@ class StartWindow(QMainWindow):
         self.button1.setChecked(False)
         self.button2.setChecked(False)
         self.button3.setChecked(True)
+        self.next_button.setDisabled(False)
+
 
         
     def open_next_window(self):
@@ -160,22 +175,15 @@ class StartWindow(QMainWindow):
         if self.pixel_size_value == "":
             self.pixel_size_value = 1000
         if self.inputfile_name == "":
-            self.inputfile_name = "inputfile"
+            self.inputfile_name = "inputfile.txt"
         if self.zeropeak_name == "":
-            self.zeropeak_name = "zeropeak"
+            self.zeropeak_name = "zeropeak_coefficients.txt"
         if self.scatter_name == "":
-            self.scatter_name = "scater"
+            self.scatter_name = "scater_coefficients.txt"
         if self.sample_matrix_name == "":
-            self.sample_matrix_name = "sample_matrix"
+            self.sample_matrix_name = "sample_matrix.txt"
         if self.treshhold_value == "":
             self.treshhold_value = 10
-        
-        print(self.pixel_size_value)
-        print(self.inputfile_name)
-        print(self.scatter_name)
-        print(self.sample_matrix_name)
-        print(self.treshhold_value)
-        print(self.main_folder_path)
         
         if not (self.main_folder_path == ""):
             if self.mode_number == 1:
