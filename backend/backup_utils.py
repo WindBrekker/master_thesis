@@ -5,8 +5,8 @@ import numpy as np
 from pathlib import Path
 from os.path import exists as file_exists
 from PyQt6.QtGui import QPalette, QColor, QIcon, QAction, QPixmap
-import start_window
-import new_window
+import UI.start_window as start_window
+import UI.new_window as new_window
 import xraylib as xr
 import math
 import matplotlib.pyplot as plt
@@ -14,9 +14,7 @@ import matplotlib.pyplot as plt
 # def refresh():
 #     pass
 
-# def folder_changed(folder_combobox_text):
-#     current_folder_name = folder_combobox_text
-#     print(current_folder_name)
+
 
 def file_to_list(input):
     try:

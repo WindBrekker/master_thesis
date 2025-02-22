@@ -1,7 +1,7 @@
 import sys
 import shutil
 import os
-import backend.utils as utils
+import utils
 import numpy as np
 from pathlib import Path
 from os.path import exists as file_exists
@@ -20,7 +20,7 @@ from PyQt6.QtWidgets import (
     QCheckBox,
 )
 import mode3
-import mode2
+import mode2     
 import mode1
 
 
@@ -195,7 +195,9 @@ class NewWindow(QMainWindow):
         
         # #QPixmap
         self.sample_pixmap = QPixmap('photo.png')
+        self.sample_picture_label.setPixmap(self.sample_pixmap)
         self.sample_pixmap_2 = QPixmap('photo.png')
+        
 
         # #QPushButton
         self.previous_element_button = QPushButton("<", self)

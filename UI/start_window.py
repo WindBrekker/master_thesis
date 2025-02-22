@@ -1,7 +1,7 @@
 # start_window.py
 import sys
 from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QVBoxLayout, QWidget, QLabel, QLineEdit, QCheckBox, QHBoxLayout
-import backend.utils as utils
+import utils
 import mode3
 import mode2
 import mode1
@@ -80,12 +80,16 @@ class StartWindow(QMainWindow):
         self.Inputfile = QLineEdit(self)
         self.Inputfile.setPlaceholderText("inputfile.txt")
         self.Zeropeak = QLineEdit(self)
-        self.Zeropeak.setPlaceholderText("zeropeak_coefficients.txt")
+        self.Zeropeak.setPlaceholderText("zeropeak")
         self.Scater = QLineEdit(self)    
-        self.Scater.setPlaceholderText("scater_coefficients.txt")
+        self.Scater.setPlaceholderText("scater")
         self.SampMatrix = QLineEdit(self)
         self.SampMatrix.setPlaceholderText("sample_matrix.txt")
         self.Treshold = QLineEdit(self)
+        self.Scater_Coefficients = QLineEdit(self)
+        self.Scater_Coefficients.setPlaceholderText("scater_coefficients.txt")
+        self.Zeropeak_Coefficients = QLineEdit(self)
+        self.Zeropeak_Coefficients.setPlaceholderText("zeropeak_coefficients.txt")
         self.Treshold.setPlaceholderText("10")
         
         # Checkboxes
@@ -112,6 +116,8 @@ class StartWindow(QMainWindow):
         layout.addWidget(self.Inputfile)
         layout.addWidget(self.Zeropeak)
         layout.addWidget(self.Scater)
+        layout.addWidget(self.Scater_Coefficients)
+        layout.addWidget(self.Zeropeak_Coefficients)
         layout.addWidget(self.SampMatrix)
         layout.addWidget(self.Treshold)
         layout.addWidget(self.next_button)
@@ -132,9 +138,11 @@ class StartWindow(QMainWindow):
         if self.checkbox1.isChecked():
             self.spectrum = "Mono"
             self.Zeropeak.setDisabled(True)   
+            self.Zeropeak_Coefficients.setDisabled(True)
         else: 
             self.spectrum = "Poli"
             self.Zeropeak.setDisabled(False)
+            self.Zeropeak_Coefficients.setDisabled(False)
         
     
     def open_window1(self):
@@ -169,6 +177,8 @@ class StartWindow(QMainWindow):
         self.inputfile_name = str(self.Inputfile.text())
         self.zeropeak_name = str(self.Zeropeak.text())
         self.scatter_name = str(self.Scater.text())
+        self.zeropeak_coefficients_name = str(self.Zeropeak_Coefficients.text())
+        self.scatter_coefficients_name = str(self.Scater_Coefficients.text())
         self.sample_matrix_name = str(self.SampMatrix.text())
         self.treshhold_value = str(self.Treshold.text())
         
@@ -177,9 +187,13 @@ class StartWindow(QMainWindow):
         if self.inputfile_name == "":
             self.inputfile_name = "inputfile.txt"
         if self.zeropeak_name == "":
-            self.zeropeak_name = "zeropeak_coefficients.txt"
+            self.zeropeak_name = "zeropeak"
         if self.scatter_name == "":
-            self.scatter_name = "scater_coefficients.txt"
+            self.scatter_name = "scater"
+        if self.zeropeak_coefficients_name == "":
+            self.zeropeak_coefficients_name = "zeropeak_coefficients.txt"
+        if self.scatter_coefficients_name == "":
+            self.scatter_coefficients_name = "scater_coefficients.txt"
         if self.sample_matrix_name == "":
             self.sample_matrix_name = "sample_matrix.txt"
         if self.treshhold_value == "":
@@ -188,15 +202,15 @@ class StartWindow(QMainWindow):
         if not (self.main_folder_path == ""):
             if self.mode_number == 1:
                 self.new_window = new_window.NewWindow(self.mode1)
-                mode1.main(self.new_window, self, self.mode1, self.main_folder_path, self.pixel_size_value, self.inputfile_name, self.zeropeak_name, self.scatter_name, self.sample_matrix_name, self.treshhold_value, self.spectrum)
+                mode1.main(self.new_window, self, self.mode1, self.main_folder_path, self.pixel_size_value, self.inputfile_name, self.zeropeak_name, self.scatter_name, self.sample_matrix_name, self.treshhold_value, self.spectrum, self.zeropeak_coefficients_name, self.scatter_coefficients_name)
             elif self.mode_number == 2:
                 self.new_window = new_window.NewWindow(self.mode2)
                 self.new_window.show()
-                mode2.main(self.new_window, self, self.mode2, self.main_folder_path, self.pixel_size_value, self.inputfile_name, self.zeropeak_name, self.scatter_name, self.sample_matrix_name, self.treshhold_value, self.spectrum)
+                mode2.main(self.new_window, self, self.mode2, self.main_folder_path, self.pixel_size_value, self.inputfile_name, self.zeropeak_name, self.scatter_name, self.sample_matrix_name, self.treshhold_value, self.spectrum, self.zeropeak_coefficients_name, self.scatter_coefficients_name)
             elif self.mode_number == 3:
                 self.new_window = new_window.NewWindow(self.mode3)
                 self.new_window.show()
-                mode3.main(self.new_window, self, self.mode3, self.main_folder_path, self.pixel_size_value, self.inputfile_name, self.zeropeak_name, self.scatter_name, self.sample_matrix_name, self.treshhold_value, self.spectrum)
+                mode3.main(self.new_window, self, self.mode3, self.main_folder_path, self.pixel_size_value, self.inputfile_name, self.zeropeak_name, self.scatter_name, self.sample_matrix_name, self.treshhold_value, self.spectrum, self.zeropeak_coefficients_name, self.scatter_coefficients_name)
         else:
             print("There's an empty value in Main Folder Path line. Fix it before next attempt")
 

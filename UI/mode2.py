@@ -1,7 +1,7 @@
 import sys
 import shutil
 import os
-import backend.utils as utils
+import utils
 import numpy as np
 from pathlib import Path
 from os.path import exists as file_exists
