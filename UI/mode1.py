@@ -8,6 +8,8 @@ from os.path import exists as file_exists
 from PyQt6.QtGui import QPalette, QColor, QIcon, QAction, QPixmap
 from PyQt6.QtWidgets import QApplication
 import new_window
+import quantify
+import plotly.express as px
 
 
 
@@ -66,16 +68,17 @@ def main(window, start_window_instance, title, main_folder_path, pixel_size_valu
     print(spectrum)
     if spectrum == "Poli":
         utils.load_zeropeak_file(main_folder_path, zeropeak_coefficients_name, window)
-
-        
-   
-    window.previous_element_button.clicked.connect(lambda: utils.previous_element_for_mask(window, treshhold_value))
-    window.next_element_button.clicked.connect(lambda: utils.next_element_for_mask(window, treshhold_value))
+    window.previous_element_button.setDisabled(True)
+    window.next_element_button.setDisabled(True)
     window.use_for_mask_button.clicked.connect(lambda: utils.use_for_mask(window))
     window.colorbar_combobox.activated.connect(lambda: utils.colorbox(window))
     window.prefere_folder_combobox.activated.connect(lambda: utils.box_folder_changed(window, zeropeak_name, scatter_name, spectrum, main_folder_path, treshhold_value))
-    window.quantify_button.clicked.connect(lambda: utils.quantify(window, main_folder_path, pixel_size_value, inputfile_name, zeropeak_name, scatter_name, sample_matrix_name, treshhold_value, spectrum, zeropeak_coefficients_name, scatter_coefficients_name))
+    window.quantify_button.clicked.connect(lambda: quantify.quantify(window, main_folder_path, pixel_size_value, inputfile_name, zeropeak_name, scatter_name, sample_matrix_name, treshhold_value, spectrum, zeropeak_coefficients_name, scatter_coefficients_name))
+    window.confirm_saving_button.clicked.connect(lambda: utils.save_quantification_data(window))
+    window.exiting_button.clicked.connect(lambda: exit_program)
 
+def exit_program():
+    sys.exit(app.exec())
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = new_window.NewWindow("QuantSlice")

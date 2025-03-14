@@ -19,6 +19,7 @@ from PyQt6.QtWidgets import (
     QComboBox,
     QCheckBox,
 )
+
 import mode3
 import mode2     
 import mode1
@@ -197,6 +198,7 @@ class NewWindow(QMainWindow):
         self.sample_pixmap = QPixmap('photo.png')
         self.sample_picture_label.setPixmap(self.sample_pixmap)
         self.sample_pixmap_2 = QPixmap('photo.png')
+        self.sample_picture_label2.setPixmap(self.sample_pixmap_2)
         
 
         # #QPushButton
@@ -206,10 +208,10 @@ class NewWindow(QMainWindow):
         self.quantify_button = QPushButton("Quantify", self)
         
 
-        self.confirm_saving_button = QPushButton("Confirm",self)
+        self.confirm_saving_button = QPushButton("Confirm and Save",self)
         
-        self.saving_button = QPushButton("Save and Exit",self)
-        self.saving_button.setEnabled(False)
+        self.exiting_button = QPushButton("Exit",self)
+        self.exiting_button.setEnabled(False)
 
 
         # #Adding widgets
@@ -248,7 +250,7 @@ class NewWindow(QMainWindow):
         saving_checkbox_SMi4_layout.addWidget(self.element_mass_ng_checkbox)
         
         saving_button_layout.addWidget(self.confirm_saving_button)
-        saving_button_layout.addWidget(self.saving_button)
+        saving_button_layout.addWidget(self.exiting_button)
 
 
         Sample_layout.addWidget(self.sample_picture_label)

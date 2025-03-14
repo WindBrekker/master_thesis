@@ -5,7 +5,8 @@ import numpy as np
 from pathlib import Path
 from os.path import exists as file_exists
 from PyQt6.QtGui import QPalette, QColor, QIcon, QAction, QPixmap
-from PyQt6.QtWidgets import QApplication
+from PyQt6.QtWidgets import QApplication, QMessageBox
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 import new_window
 import mode1
 import mode2
@@ -15,6 +16,10 @@ import matplotlib.pyplot as plt
 from tqdm import tqdm
 import xraylib as xr
 import math
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
+import matplotlib.pyplot as plt
+import plotly.express as px
 
 
 def colorbox(window):
@@ -25,7 +30,7 @@ def use_for_mask(window):
     window.Mask_value_label.setText(window.element_for_mask)
     window.quantify_button.setDisabled(False)
 
-def previous_element_for_mask(window, treshold):
+def previous_element_for_mask(window, threshold):
     try:
         window.index_of_element -= 1
         element_for_mask = window.elements_in_subfolder[window.index_of_element]
@@ -33,30 +38,127 @@ def previous_element_for_mask(window, treshold):
         window.element_name_label.setText(element_for_mask)
         
         
-        window.mask = mask_creating(element_for_mask, window.output_path, window.subfolder_path, window.prename, treshold, window.color_of_heatmap)
-        window.antimask = mask_creating(element_for_mask, window.output_path, window.subfolder_path, window.prename, treshold, window.color_of_heatmap)
-    
-        window.sample_pixmap = QPixmap(os.path.join(window.output_path, "mask_noc.png"))
-        window.sample_picture_label.setPixmap(window.sample_pixmap)
+        window.mask = mask_creating(element_for_mask, window.output_path, window.subfolder_path, window.prename, threshold, window.color_of_heatmap)
+        window.antimask = mask_creating(element_for_mask, window.output_path, window.subfolder_path, window.prename, threshold, window.color_of_heatmap)
+        mask_number_of_counts = file_to_list(Path.joinpath(window.output_path, "mask_noc.txt"))
+        
+        color = window.color_of_heatmap
+
+        figure1, ax1 = plt.subplots()
+        canvas1 = FigureCanvas(figure1)
+        im1 = ax1.imshow(window.mask, cmap=color, interpolation="nearest")
+        plt.colorbar(im1, ax=ax1)
+
+        figure2, ax2 = plt.subplots()
+        canvas2 = FigureCanvas(figure2)
+        im2 = ax2.imshow(mask_number_of_counts, cmap=color, interpolation="nearest")
+
+        plt.colorbar(im2, ax=ax2)
+        canvas1.draw()
+        canvas2.draw()
+
+        window.sample_picture_label.setPixmap(canvas1.grab())
+        window.sample_picture_label2.setPixmap(canvas2.grab())
+
     except IndexError:
         print("No previous element.")
                
-def next_element_for_mask(window, treshold):
+def next_element_for_mask(window, threshold):
     try:
         window.index_of_element += 1
         element_for_mask = window.elements_in_subfolder[window.index_of_element]
         window.element_name_label.setText(element_for_mask)
 
-        
-        
         print("Element for mask: ", element_for_mask)
-        window.mask = mask_creating(element_for_mask, window.output_path, window.subfolder_path, window.prename, treshold, window.color_of_heatmap)
-        window.antimask = mask_creating(element_for_mask, window.output_path, window.subfolder_path, window.prename, treshold, window.color_of_heatmap)
-    
-        window.sample_pixmap = QPixmap(os.path.join(window.output_path, "mask_noc.png"))
-        window.sample_picture_label.setPixmap(window.sample_pixmap)
+        window.mask = mask_creating(element_for_mask, window.output_path, window.subfolder_path, window.prename, threshold, window.color_of_heatmap)
+        window.antimask = mask_creating(element_for_mask, window.output_path, window.subfolder_path, window.prename, threshold, window.color_of_heatmap)
+        mask_number_of_counts = file_to_list(Path.joinpath(window.output_path, "mask_noc.txt"))
+        
+        color = window.color_of_heatmap
+
+        figure1, ax1 = plt.subplots()
+        canvas1 = FigureCanvas(figure1)
+        im1 = ax1.imshow(window.mask, cmap=color, interpolation="nearest")
+        plt.colorbar(im1, ax=ax1)
+
+        figure2, ax2 = plt.subplots()
+        canvas2 = FigureCanvas(figure2)
+        im2 = ax2.imshow(mask_number_of_counts, cmap=color, interpolation="nearest")
+
+        plt.colorbar(im2, ax=ax2)
+        canvas1.draw()
+        canvas2.draw()
+
+        window.sample_picture_label.setPixmap(canvas1.grab())
+        window.sample_picture_label2.setPixmap(canvas2.grab())
+
     except IndexError:
         print("No next element.")
+
+ 
+def next_ci_map(window):
+    try:
+        window.index_of_element += 1
+        element = window.elements_in_subfolder[window.index_of_element]
+        window.element_name_label.setText(element)
+
+        print("Ci map of element: ", element)
+        Ci_table = file_to_list(Path.joinpath(window.output_path, f"{window.prename}{element}.txt"))
+        Ci_table_no_heatpints = file_to_list(Path.joinpath(window.temporary_folder, f"{element}_Ci_table_no_heatpoints"))
+        
+        
+        color = window.color_of_heatmap
+
+        figure1, ax1 = plt.subplots()
+        canvas1 = FigureCanvas(figure1)
+        im1 = ax1.imshow(Ci_table_no_heatpints, cmap=color, interpolation="nearest")
+        plt.colorbar(im1, ax=ax1)
+
+        figure2, ax2 = plt.subplots()
+        canvas2 = FigureCanvas(figure2)
+        im2 = ax2.imshow(Ci_table, cmap=color, interpolation="nearest")
+
+        plt.colorbar(im2, ax=ax2)
+        canvas1.draw()
+        canvas2.draw()
+
+        window.sample_picture_label.setPixmap(canvas1.grab())
+        window.sample_picture_label2.setPixmap(canvas2.grab())
+
+    except IndexError:
+        print("No next element.")
+        
+def previous_ci_map(window):
+    try:
+        window.index_of_element -= 1
+        element = window.elements_in_subfolder[window.index_of_element]
+        
+        print("Ci map of element: ", element)
+        Ci_table = file_to_list(Path.joinpath(window.output_path, f"{window.prename}{element}.txt"))
+        Ci_table_no_heatpints = file_to_list(Path.joinpath(window.temporary_folder, f"{element}_Ci_table_no_heatpoints"))
+        
+        
+        color = window.color_of_heatmap
+
+        figure1, ax1 = plt.subplots()
+        canvas1 = FigureCanvas(figure1)
+        im1 = ax1.imshow(Ci_table_no_heatpints, cmap=color, interpolation="nearest")
+        plt.colorbar(im1, ax=ax1)
+
+        figure2, ax2 = plt.subplots()
+        canvas2 = FigureCanvas(figure2)
+        im2 = ax2.imshow(Ci_table, cmap=color, interpolation="nearest")
+
+        plt.colorbar(im2, ax=ax2)
+        canvas1.draw()
+        canvas2.draw()
+
+        window.sample_picture_label.setPixmap(canvas1.grab())
+        window.sample_picture_label2.setPixmap(canvas2.grab())
+
+    except IndexError:
+        print("No pervious element.")
+
     
 def load_input_files(main_folder_path, inputfile_name, window):
     print("Loading input files... ")
@@ -108,6 +210,10 @@ def load_sample_matrix_file(main_folder_path, sample_matrix_name, window):
     print("Sample matrix ready.")
     
 def box_folder_changed(window, zeropeak_name, scater_name, spectrum, main_folder_path, treshold):
+    window.previous_element_button.setEnabled(True)
+    window.next_element_button.setEnabled(True)
+    window.previous_element_button.clicked.connect(lambda: previous_element_for_mask(window, treshold))
+    window.next_element_button.clicked.connect(lambda: next_element_for_mask(window, treshold))
     current_folder = str(window.prefere_folder_combobox.currentText())
     print(f"Current Folder selected From QCombobox: {current_folder}")
     change_folder(window, main_folder_path, scater_name, zeropeak_name, spectrum, current_folder, treshold)
@@ -137,9 +243,12 @@ def change_folder(window, main_folder_path, scater_name, zeropeak_name, spectrum
         
     if not Path.joinpath(main_folder_path, f"{current_folder}_output").exists():
         Path.joinpath(main_folder_path, f"{current_folder}_output").mkdir() 
-        print("Output folder1 created.")
+        print("Output folder created.")
         window.output_path = Path.joinpath(main_folder_path, f"{current_folder}_output")
         print("Output folder created.")
+    else:
+        window.output_path = Path.joinpath(main_folder_path, f"{current_folder}_output")
+        print("Output folder already exists.")
         
     output_to_file(window.livetime_matrix, Path.joinpath(window.output_path, f"livetime_map"))
         
@@ -152,21 +261,28 @@ def change_folder(window, main_folder_path, scater_name, zeropeak_name, spectrum
     print("Mask map calculated.")
     window.antimask = mask_creating(element_for_mask, window.output_path, window.subfolder_path, window.prename, treshold, window.color_of_heatmap)
     print("Antimask map calculated.")
-    
-    window.sample_pixmap = QPixmap(os.path.join(window.output_path, "mask_noc.png"))
-    window.sample_picture_label.setPixmap(window.sample_pixmap)
+    mask_number_of_counts = file_to_list(Path.joinpath(window.subfolder_path, f"{window.prename}{element}.txt"))
+
+    figure, ax = plt.subplots()
+    canvas = FigureCanvas(figure)
+    canvas2 = FigureCanvas(figure)
+
+    im = ax.imshow(window.mask, cmap=window.color_of_heatmap, interpolation="nearest")
+    im2 = ax.imshow(mask_number_of_counts, cmap=window.color_of_heatmap, interpolation="nearest")
+
+    canvas.draw()
+    canvas2.draw()
+    plt.colorbar(im, ax=ax)
+    plt.colorbar(im2, ax=ax)
+    window.sample_picture_label.setPixmap(canvas.grab())
+    window.sample_picture_label2.setPixmap(canvas2.grab())
+
     
 def calculate_livetime(zeropeak_name, zeropeak_dict, window):
     window.zeropeak_matrix = np.array(file_to_list(Path.joinpath(window.subfolder_path, f"{window.prename}{zeropeak_name}.txt")))
     window.livetime_matrix = np.array(LT_calc(window.zeropeak_matrix, float(zeropeak_dict["a"]), float(zeropeak_dict["b"])))
     print("Livetime matrix calculated.")
-
-def quantify(window, main_folder_path, pixel_size_value, inputfile_name, 
-             zeropeak_name, scatter_name, sample_matrix_name, treshhold_value, 
-             spectrum, zeropeak_coefficients_name, scatter_coefficients_name):
-    print("Quantifying...")
-    
-
+   
 def file_to_list(input):
     try:
         with open(input, 'r') as file:
@@ -287,6 +403,134 @@ def calculate_lambda_factor(rho_D, Z, Eeffi, sample_dict):
         numerator = 1 - math.exp(-denominator)
         correction_factor = denominator / numerator
     return correction_factor
+
+##---------------------------Saving---------------------------##
+def save_quantification_data(window):
+    print("Saving quantification data...")
+    for key in window.elements_in_subfolder:
+        element = key
+        try:
+            sm = file_to_list(os.path.join(window.temporary_folder,"sample_mass_noc.txt"))
+            table_of_smi = file_to_list(os.path.join(window.temporary_folder,f"{element}_element_mass_noc.txt"))
+            Ci_table = file_to_list(os.path.join(window.temporary_folder,f"{window.prename}_{element}_Ci.txt"))
+        except Exception as e:
+            print(f"Couldn't find data: {e}")
+            
+            
+        if window.element_mass_dat_checkbox.isChecked():
+            if window.element_mass_g_checkbox.isChecked():
+                SMi_saving_dat(table_of_smi,os.path.join(window.output_path,f"{window.prename}_{element}_smi"),element,1)
+            if window.element_mass_mg_checkbox.isChecked():
+                SMi_saving_dat(table_of_smi,os.path.join(window.output_path,f"{window.prename}_{element}_smi"),element,1000)
+            if window.element_mass_ug_checkbox.isChecked():
+                SMi_saving_dat(table_of_smi,os.path.join(window.output_path,f"{window.prename}_{element}_smi"),element,1000000)
+            if window.element_mass_ng_checkbox.isChecked():
+                SMi_saving_dat(table_of_smi,os.path.join(window.output_path,f"{window.prename}_{element}_smi"),element,1000000000)
+                                
+        if window.element_mass_png_checkbox.isChecked():
+            if window.element_mass_g_checkbox.isChecked():
+                SMi_saving_plot(table_of_smi,os.path.join(window.output_path,f"{window.prename}_{element}_smi"),element,window.Pixel_size,window.color_of_heatmap,1,".png")
+            if window.element_mass_mg_checkbox.isChecked():
+                SMi_saving_plot(table_of_smi,os.path.join(window.output_path,f"{window.prename}_{element}_smi"),element,window.Pixel_size,window.color_of_heatmap,1000,".png")
+            if window.element_mass_ug_checkbox.isChecked():
+                SMi_saving_plot(table_of_smi,os.path.join(window.output_path,f"{window.prename}_{element}_smi"),element,window.Pixel_size,window.color_of_heatmap,1000000,".png")
+            if window.element_mass_ng_checkbox.isChecked():
+                SMi_saving_plot(table_of_smi,os.path.join(window.output_path,f"{window.prename}_{element}_smi"),element,window.Pixel_size,window.color_of_heatmap,1000000000,".png")
+
+        if window.element_mass_bmp_checkbox.isChecked():
+            if window.element_mass_g_checkbox.isChecked():
+                SMi_saving_plot(table_of_smi,os.path.join(window.output_path,f"{window.prename}_{element}_smi"),element,window.Pixel_size,window.color_of_heatmap,1,".pdf")
+            if window.element_mass_mg_checkbox.isChecked():
+                SMi_saving_plot(table_of_smi,os.path.join(window.output_path,f"{window.prename}_{element}_smi"),element,window.Pixel_size,window.color_of_heatmap,1000,".pdf")
+            if window.element_mass_ug_checkbox.isChecked():
+                SMi_saving_plot(table_of_smi,os.path.join(window.output_path,f"{window.prename}_{element}_smi"),element,window.Pixel_size,window.color_of_heatmap,1000000,".pdf")
+            if window.element_mass_ng_checkbox.isChecked():
+                SMi_saving_plot(table_of_smi,os.path.join(window.output_path,f"{window.prename}_{element}_smi"),element,window.Pixel_size,window.color_of_heatmap,1000000000,".pdf")
+        
+        if window.element_mass_tiff_checkbox.isChecked():
+            if window.element_mass_g_checkbox.isChecked():
+                SMi_saving_plot(table_of_smi,os.path.join(window.output_path,f"{window.prename}_{element}_smi"),element,window.Pixel_size,window.color_of_heatmap,1,".tiff")
+            if window.element_mass_mg_checkbox.isChecked():
+                SMi_saving_plot(table_of_smi,os.path.join(window.output_path,f"{window.prename}_{element}_smi"),element,window.Pixel_size,window.color_of_heatmap,1000,".tiff")
+            if window.element_mass_ug_checkbox.isChecked():
+                SMi_saving_plot(table_of_smi,os.path.join(window.output_path,f"{window.prename}_{element}_smi"),element,window.Pixel_size,window.color_of_heatmap,1000000,".tiff")
+            if window.element_mass_ng_checkbox.isChecked():
+                SMi_saving_plot(table_of_smi,os.path.join(window.output_path,f"{window.prename}_{element}_smi"),element,window.Pixel_size,window.color_of_heatmap,1000000000,".tiff")
+    
+        
+        if window.Ci_png_checkbox.isChecked():
+            if window.Ci_mg_checkbox.isChecked():
+                Ci_saving_plot(Ci_table,os.path.join(window.output_path,f"{window.prename}_{element}_Ci"),element,window.Pixel_size,window.color_of_heatmap,1000,".png")
+            if window.Ci_ug_checkbox.isChecked():
+                Ci_saving_plot(Ci_table,os.path.join(window.output_path,f"{window.prename}_{element}_Ci"),element,window.Pixel_size,window.color_of_heatmap,1000000,".png")
+            if window.Ci_procent_checkbox.isChecked():
+                Ci_saving_plot(Ci_table,os.path.join(window.output_path,f"{window.prename}_{element}_Ci"),element,window.Pixel_size,window.color_of_heatmap,100,".png")
+                    
+        if window.Ci_bmp_checkbox.isChecked():
+            if window.Ci_mg_checkbox.isChecked():
+                Ci_saving_plot(Ci_table,os.path.join(window.output_path,f"{window.prename}_{element}_Ci"),element,window.Pixel_size,window.color_of_heatmap,1000,".pdf")
+            if window.Ci_ug_checkbox.isChecked():
+                Ci_saving_plot(Ci_table,os.path.join(window.output_path,f"{window.prename}_{element}_Ci"),element,window.Pixel_size,window.color_of_heatmap,1000000,".pdf")
+            if window.Ci_procent_checkbox.isChecked():
+                Ci_saving_plot(Ci_table,os.path.join(window.output_path,f"{window.prename}_{element}_Ci"),element,window.Pixel_size,window.color_of_heatmap,100,".pdf")
+                
+        if window.Ci_tiff_checkbox.isChecked():
+            if window.Ci_mg_checkbox.isChecked():
+                Ci_saving_plot(Ci_table,os.path.join(window.output_path,f"{window.prename}_{element}_Ci"),element,window.Pixel_size,window.color_of_heatmap,1000,".tiff")
+            if window.Ci_ug_checkbox.isChecked():
+                Ci_saving_plot(Ci_table,os.path.join(window.output_path,f"{window.prename}_{element}_Ci"),element,window.Pixel_size,window.color_of_heatmap,1000000,".tiff")
+            if window.Ci_procent_checkbox.isChecked():
+                Ci_saving_plot(Ci_table,os.path.join(window.output_path,f"{window.prename}_{element}_Ci"),element,window.Pixel_size,window.color_of_heatmap,100,".tiff")
+                
+        if window.Ci_dat_checkbox.isChecked():
+            if window.Ci_mg_checkbox.isChecked():
+                Ci_saving_dat(Ci_table,os.path.join(window.output_path,f"{window.prename}_{element}_Ci"),element,1000)
+            if window.Ci_ug_checkbox.isChecked():
+                Ci_saving_dat(Ci_table,os.path.join(window.output_path,f"{window.prename}_{element}_Ci"),element,1000000)
+            if window.Ci_procent_checkbox.isChecked():
+                Ci_saving_dat(Ci_table,os.path.join(window.output_path,f"{window.prename}_{element}_Ci"),element,100)
+
+
+        if window.sample_mass_dat_checkbox.isChecked():
+            if window.sample_mass_g_checkbox.isChecked():
+                SM_saving_dat(sm,os.path.join(window.output_path,f"{window.prename}_sm"),1)
+            if window.sample_mass_mg_checkbox.isChecked():
+                SM_saving_dat(sm,os.path.join(window.output_path,f"{window.prename}_sm"),1000)
+            if window.sample_mass_ug_checkbox.isChecked():
+                SM_saving_dat(sm,os.path.join(window.output_path,f"{window.prename}_sm"),1000000)
+            if window.sample_mass_ng_checkbox.isChecked():
+                SM_saving_dat(sm,os.path.join(window.output_path,f"{window.prename}_sm"),1000000000)
+                                
+        if window.sample_mass_png_checkbox.isChecked():
+            if window.sample_mass_g_checkbox.isChecked():
+                SM_saving_plot(sm,os.path.join(window.output_path,f"{window.prename}_sm"),window.Pixel_size,window.color_of_heatmap,1,".png")
+            if window.sample_mass_mg_checkbox.isChecked():
+                SM_saving_plot(sm,os.path.join(window.output_path,f"{window.prename}_sm"),window.Pixel_size,window.color_of_heatmap,1000,".png")
+            if window.sample_mass_ug_checkbox.isChecked():
+                SM_saving_plot(sm,os.path.join(window.output_path,f"{window.prename}_sm"),window.Pixel_size,window.color_of_heatmap,1000000,".png")
+            if window.sample_mass_ng_checkbox.isChecked():
+                SM_saving_plot(sm,os.path.join(window.output_path,f"{window.prename}_sm"),window.Pixel_size,window.color_of_heatmap,1000000000,".png")
+
+        if window.sample_mass_bmp_checkbox.isChecked():
+            if window.sample_mass_g_checkbox.isChecked():
+                SM_saving_plot(sm,os.path.join(window.output_path,f"{window.prename}_sm"),window.Pixel_size,window.color_of_heatmap,1,".pdf")
+            if window.sample_mass_mg_checkbox.isChecked():
+                SM_saving_plot(sm,os.path.join(window.output_path,f"{window.prename}_sm"),window.Pixel_size,window.color_of_heatmap,1000,".pdf")
+            if window.sample_mass_ug_checkbox.isChecked():
+                SM_saving_plot(sm,os.path.join(window.output_path,f"{window.prename}_sm"),window.Pixel_size,window.color_of_heatmap,1000000,".pdf")
+            if window.sample_mass_ng_checkbox.isChecked():
+                SM_saving_plot(sm,os.path.join(window.output_path,f"{window.prename}_sm"),window.Pixel_size,window.color_of_heatmap,1000000000,".pdf")
+        
+        if window.sample_mass_tiff_checkbox.isChecked():
+            if window.sample_mass_g_checkbox.isChecked():
+                SM_saving_plot(sm,os.path.join(window.output_path,f"{window.prename}_sm"),window.Pixel_size,window.color_of_heatmap,1,".tiff")
+            if window.sample_mass_mg_checkbox.isChecked():
+                SM_saving_plot(sm,os.path.join(window.output_path,f"{window.prename}_sm"),window.Pixel_size,window.color_of_heatmap,1000,".tiff")
+            if window.sample_mass_ug_checkbox.isChecked():
+                SM_saving_plot(sm,os.path.join(window.output_path,f"{window.prename}_sm"),window.Pixel_size,window.color_of_heatmap,1000000,".tiff")
+            if window.sample_mass_ng_checkbox.isChecked():
+                SM_saving_plot(sm,os.path.join(window.output_path,f"{window.prename}_sm"),window.Pixel_size,window.color_of_heatmap,1000000000,".tiff")
+
 
 def Ci_saving_dat(input, path, element, size):
     unit = {1000: "_mg_g", 1000000: "_ug_g", 1: "_g_g", 1000000000: "_ng_g"}.get(size, "")

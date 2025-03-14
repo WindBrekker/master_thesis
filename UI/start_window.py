@@ -43,7 +43,7 @@ class StartWindow(QMainWindow):
         self.mode1 = "Full map mode"
         self.mode2 = "Snip mode"
         self.mode3 = "Point mode"
-        self.spectrum = "Mono"
+        self.spectrum = "Poli"
         
         self.setWindowTitle("SliceQuant")
         
