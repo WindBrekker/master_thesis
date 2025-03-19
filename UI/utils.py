@@ -245,7 +245,6 @@ def change_folder(window, main_folder_path, scater_name, zeropeak_name, spectrum
         Path.joinpath(main_folder_path, f"{current_folder}_output").mkdir() 
         print("Output folder created.")
         window.output_path = Path.joinpath(main_folder_path, f"{current_folder}_output")
-        print("Output folder created.")
     else:
         window.output_path = Path.joinpath(main_folder_path, f"{current_folder}_output")
         print("Output folder already exists.")

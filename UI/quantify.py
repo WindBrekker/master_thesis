@@ -94,6 +94,7 @@ def quantify(window, main_folder_path, pixel_size_value, inputfile_name,
                 lambda_factor = np.zeros_like(table_of_smi)
                 median_value = np.median(surface_mass_array)
                 total_elements = surface_mass_array.size
+                print("total elements", total_elements)
                 indices = np.argwhere(table_of_smi != 0)
                 
                 counter = 0
@@ -117,8 +118,9 @@ def quantify(window, main_folder_path, pixel_size_value, inputfile_name,
                     counter +=1
                     Ci_table_sum += Ci_table[i, j]
                     lambda_factor_sum += lambda_factor_value
-                    utils.output_to_file(Ci_table, Path.joinpath(window.temporary_folder, f"{element}_Ci_table"))
-                    utils.output_to_file(lambda_factor, Path.joinpath(window.temporary_folder, f"{element}_lambda_factor"))
+                utils.output_to_file(Ci_table, Path.joinpath(window.temporary_folder, f"{element}_Ci_table"))
+                utils.output_to_file(lambda_factor, Path.joinpath(window.temporary_folder, f"{element}_lambda_factor"))
+            
                     
                 Ci_table_sum_2 = np.sum(Ci_table[table_of_smi != 0])        
                 lambda_average_factor = lambda_factor_sum/counter
@@ -132,12 +134,10 @@ def quantify(window, main_folder_path, pixel_size_value, inputfile_name,
                         Ci_table_no_heatpoints[i, j] = 0   
                     else:
                         Ci_table_no_heatpoints[i, j] = Ci_table[i, j]
-                    utils.output_to_file(Ci_table_no_heatpoints, Path.joinpath(window.temporary_folder, f"{element}_Ci_table_no_heatpoints"))
+                utils.output_to_file(Ci_table_no_heatpoints, Path.joinpath(window.temporary_folder, f"{element}_Ci_table_no_heatpoints"))
     print("Quantification finished.")
     QMessageBox.information(window,"Qunatification Completed", "Use arrows to see Ci maps. \nUse 'confirm' button to save data. \nUse 'current subfolder combobox' to continue with next data.")
     window.previous_element_button.clicked.connect(lambda: utils.previous_ci_map(window))
     window.next_element_button.clicked.connect(lambda: utils.next_ci_map(window))
     window.confirm_saving_button.setEnabled(True)
-    
-    
     

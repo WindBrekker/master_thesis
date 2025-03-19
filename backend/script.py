@@ -310,16 +310,16 @@ if __name__ == "__main__":
 
 ###----------------------------------------- STYCZEŃ.
 
-# Program działa na duzych mapach xxx
+# Program działa na duzych mapach --------------------------------------- DONE
 
 ###----------------------------------------- LUTY.
 
-# Dane z synchrotronu (nie ma lifetime - jeśli nie ma pliku to nie dzielimy) 
+# Dane z synchrotronu (nie ma lifetime - jeśli nie ma pliku to nie dzielimy) --------------------------------------- DONE
 # Pisanie pracy + szlifowanie kodu 
 # Point mode 
 # Snip mode 
 # WSTĘP TEORETYCZNY - coś ma być napisane. Coś o solaris, coś o energiach, że jedno mono drugie poli i wgl lanie wody. 
-# jakiś szkielet - o czym wgl będziemy pisać. 
+# jakiś szkielet - o czym wgl będziemy pisać. --------------------------------------- DONE
 
 ###----------------------------------------- MARZEC.
 
