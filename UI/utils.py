@@ -230,9 +230,15 @@ def change_folder(window, main_folder_path, scater_name, zeropeak_name, spectrum
     subfolder_insides = os.listdir(window.subfolder_path)
     window.elements_in_subfolder.clear()
     for file in subfolder_insides:
-        element = file.rsplit("_", 1)[-1].split(".")[0]
+        element_line = file.rsplit("_", 1)[-1].split(".")[0]
+        element = element_line.split("-")[0]
+        try:
+            line = element_line.split("-")[1]
+        except Exception as e:
+            line = "K"
+            print(f"Error: {e}")
         if element not in [scater_name, zeropeak_name]:
-            window.elements_in_subfolder.append(element)
+            window.elements_in_subfolder.append(element_line)
     prename_ = subfolder_insides[0].rsplit("_", 1)[0]
     window.prename = prename_ + "_"
     print("Folder selected.")
@@ -321,7 +327,6 @@ def output_to_file(input, output):
     np.savetxt(f"{output}.txt", input, fmt='%.2e', delimiter=',')
 
 def mask_creating(element, output_path, folder_path, prename, treshold, color):
-    table_of_mask = None
     file_path = Path.joinpath(folder_path, f"{prename}{element}")
     table_of_mask = file_to_list(file_path)
     maxof_masktable = np.max(table_of_mask)

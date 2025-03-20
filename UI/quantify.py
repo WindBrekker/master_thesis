@@ -72,9 +72,16 @@ def quantify(window, main_folder_path, pixel_size_value, inputfile_name,
     utils.output_to_file(surface_mass_array_masked, Path.joinpath(window.temporary_folder, "sample_mass_noc"))
     print("Sample mass calculated.")
     for key in window.elements_in_subfolder:
-            element = key
+            element_line = key
+            element = element_line.split()[0]
+            try:
+                line = element_line.split()[1]
+            except Exception as e:
+                line = "K"
+                print (f"Error: {e}")
+            
             print(f"Processing element: {element} ...")
-            if Path.joinpath(window.subfolder_path, f"{window.prename}{element}.txt").exists() or Path.joinpath(window.subfolder_path, f"{window.prename}{element}.csv").exists():
+            if Path.joinpath(window.subfolder_path, f"{window.prename}{element_line}.txt").exists() or Path.joinpath(window.subfolder_path, f"{window.prename}{element_line}.csv").exists():
                 K_i = float(window.k_value_per_element_dict[element])
                 counts_data = Path.joinpath(window.subfolder_path,f"{window.prename}{element}")
                 counts_table = utils.file_to_list(counts_data)
@@ -88,7 +95,7 @@ def quantify(window, main_folder_path, pixel_size_value, inputfile_name,
                     table_of_smi = (counts_table * mask_map) / window.livetime_matrix / K_i
                 elif spectrum == "Mono":
                     table_of_smi = (counts_table * mask_map) / K_i
-                utils.output_to_file(table_of_smi,Path.joinpath(window.temporary_folder,f"{element}_table_of_smi"))    
+                utils.output_to_file(table_of_smi,Path.joinpath(window.temporary_folder,f"{element_line}_table_of_smi"))    
                 print("SMi table calculated.")             
                         
                 
@@ -121,8 +128,8 @@ def quantify(window, main_folder_path, pixel_size_value, inputfile_name,
                     counter +=1
                     Ci_table_sum += Ci_table[i, j]
                     lambda_factor_sum += lambda_factor_value
-                utils.output_to_file(Ci_table, Path.joinpath(window.temporary_folder, f"{element}_Ci_table"))
-                utils.output_to_file(lambda_factor, Path.joinpath(window.temporary_folder, f"{element}_lambda_factor"))
+                utils.output_to_file(Ci_table, Path.joinpath(window.temporary_folder, f"{element_line}_Ci_table"))
+                utils.output_to_file(lambda_factor, Path.joinpath(window.temporary_folder, f"{element_line}_lambda_factor"))
             
                     
                 Ci_table_sum_2 = np.sum(Ci_table[table_of_smi != 0])        
@@ -137,7 +144,7 @@ def quantify(window, main_folder_path, pixel_size_value, inputfile_name,
                         Ci_table_no_heatpoints[i, j] = 0   
                     else:
                         Ci_table_no_heatpoints[i, j] = Ci_table[i, j]
-                utils.output_to_file(Ci_table_no_heatpoints, Path.joinpath(window.temporary_folder, f"{element}_Ci_table_no_heatpoints"))
+                utils.output_to_file(Ci_table_no_heatpoints, Path.joinpath(window.temporary_folder, f"{element_line}_Ci_table_no_heatpoints"))
     print("Quantification finished.")
     QMessageBox.information(window,"Qunatification Completed", "Use arrows to see Ci maps. \nUse 'confirm' button to save data. \nUse 'current subfolder combobox' to continue with next data.")
     window.previous_element_button.clicked.connect(lambda: utils.previous_ci_map(window))
