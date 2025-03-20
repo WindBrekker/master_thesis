@@ -103,7 +103,7 @@ def next_ci_map(window):
         window.element_name_label.setText(element)
 
         print("Ci map of element: ", element)
-        Ci_table = file_to_list(Path.joinpath(window.output_path, f"{window.prename}{element}"))
+        Ci_table = file_to_list(Path.joinpath(window.temporary_folder, f"{element}_Ci_table"))
         Ci_table_no_heatpints = file_to_list(Path.joinpath(window.temporary_folder, f"{element}_Ci_table_no_heatpoints"))
         
         
@@ -134,7 +134,7 @@ def previous_ci_map(window):
         element = window.elements_in_subfolder[window.index_of_element]
         
         print("Ci map of element: ", element)
-        Ci_table = file_to_list(Path.joinpath(window.output_path, f"{window.prename}{element}"))
+        Ci_table = file_to_list(Path.joinpath(window.temporary_folder, f"{element}_Ci_table"))
         Ci_table_no_heatpints = file_to_list(Path.joinpath(window.temporary_folder, f"{element}_Ci_table_no_heatpoints"))
         
         
@@ -161,8 +161,16 @@ def previous_ci_map(window):
 
     
 def load_input_files(main_folder_path, inputfile_name, window):
-    print("Loading input files... ")
+    print("Loading inputfiles... ")
     folder = Path(main_folder_path)
+    if os.path.exists(folder.joinpath(inputfile_name + ".txt")):
+        inputfile_name = inputfile_name + ".txt"
+        print(f"{folder.joinpath(inputfile_name)} found.")
+    elif os.path.exists(folder.joinpath(inputfile_name + ".csv")):
+        inputfile_name = inputfile_name + ".csv"
+        print(f"{folder.joinpath(inputfile_name)} found.")
+    else:
+        raise FileNotFoundError(f"File not found: {folder.joinpath(inputfile_name + ".txt")} or {folder.joinpath(inputfile_name + ".csv")}")
     with folder.joinpath(inputfile_name).open("rt") as elements_file:
         window.k_value_per_element_dict = {}
         window.energy_per_element_dict = {}
@@ -176,10 +184,17 @@ def load_input_files(main_folder_path, inputfile_name, window):
             window.k_value_per_element_dict[element] = k_value
             window.energy_per_element_dict[element] = energy
             window.z_number_per_element_dict[element] = z_number
+            #print(f"Element: {element}, K-value: {k_value}, Energy: {energy}, Z-number: {z_number}")
     print("Inputfile ready.")
     
 def load_zeropeak_file(main_folder_path, zeropeak_coefficients_name, window):
     folder = Path(main_folder_path)
+    if os.path.exists(folder.joinpath(zeropeak_coefficients_name + ".txt")):
+        zeropeak_coefficients_name = zeropeak_coefficients_name + ".txt"
+    elif os.path.exists(folder.joinpath(zeropeak_coefficients_name + ".csv")):
+        zeropeak_coefficients_name = zeropeak_coefficients_name + ".csv"
+    else:
+        raise FileNotFoundError(f"File not found: {zeropeak_coefficients_name}.txt or {zeropeak_coefficients_name}.csv")
     with folder.joinpath(zeropeak_coefficients_name).open("rt") as zeropeak_factors:
         window.zeropeak_dict = {}
         for line in zeropeak_factors:
@@ -190,6 +205,13 @@ def load_zeropeak_file(main_folder_path, zeropeak_coefficients_name, window):
     
 def load_scatter_file(main_folder_path, scatter_coefficients_name, window):
     folder = Path(main_folder_path)
+    if os.path.exists(folder.joinpath(scatter_coefficients_name + ".txt")):
+        scatter_coefficients_name = scatter_coefficients_name + ".txt"
+    elif os.path.exists(folder.joinpath(scatter_coefficients_name + ".csv")):
+        scatter_coefficients_name = scatter_coefficients_name + ".csv"
+    else:
+        raise FileNotFoundError(f"File not found: {scatter_coefficients_name}.txt or {scatter_coefficients_name}.csv")
+    
     with folder.joinpath(main_folder_path, scatter_coefficients_name).open() as scater_factors:
         window.scater_dict = {}
         for line in scater_factors:
@@ -200,6 +222,12 @@ def load_scatter_file(main_folder_path, scatter_coefficients_name, window):
     
 def load_sample_matrix_file(main_folder_path, sample_matrix_name, window):
     folder = Path(main_folder_path)
+    if os.path.exists(folder.joinpath(sample_matrix_name + ".txt")):
+        sample_matrix_name = sample_matrix_name + ".txt"
+    elif os.path.exists(folder.joinpath(sample_matrix_name + ".csv")):
+        sample_matrix_name = sample_matrix_name + ".csv"
+    else:
+        raise FileNotFoundError(f"File not found: {sample_matrix_name}.txt or {sample_matrix_name}.csv")
     with folder.joinpath(sample_matrix_name).open("rt") as sample_matrix_file:
         window.concentration_per_element_dict = {}
         for line in sample_matrix_file:
@@ -231,12 +259,15 @@ def change_folder(window, main_folder_path, scater_name, zeropeak_name, spectrum
     window.elements_in_subfolder.clear()
     for file in subfolder_insides:
         element_line = file.rsplit("_", 1)[-1].split(".")[0]
+        print("Element line: ", element_line)
         element = element_line.split("-")[0]
+        print("Element: ", element)
         try:
             line = element_line.split("-")[1]
+            print("Line: ", line)
         except Exception as e:
             line = "K"
-            print(f"Error: {e}")
+            print(f"Error with line: {e}")
         if element not in [scater_name, zeropeak_name]:
             window.elements_in_subfolder.append(element_line)
     prename_ = subfolder_insides[0].rsplit("_", 1)[0]
@@ -244,17 +275,17 @@ def change_folder(window, main_folder_path, scater_name, zeropeak_name, spectrum
     print("Folder selected.")
     print("Elements in subfolder: ", window.elements_in_subfolder)
     
+    if not Path.joinpath(main_folder_path, f"{current_folder}_output").exists():
+        Path.joinpath(main_folder_path, f"{current_folder}_output").mkdir() 
+        print("Output folder created.")
+    else:
+        print("Output folder already exists.")
+    window.output_path = Path.joinpath(main_folder_path, f"{current_folder}_output")
+    
     if spectrum == "Poli":
         calculate_livetime(zeropeak_name, window.zeropeak_dict, window)
         output_to_file(window.livetime_matrix, Path.joinpath(window.output_path, f"livetime_map"))
         
-    if not Path.joinpath(main_folder_path, f"{current_folder}_output").exists():
-        Path.joinpath(main_folder_path, f"{current_folder}_output").mkdir() 
-        print("Output folder created.")
-        window.output_path = Path.joinpath(main_folder_path, f"{current_folder}_output")
-    else:
-        window.output_path = Path.joinpath(main_folder_path, f"{current_folder}_output")
-        print("Output folder already exists.")
         
     
         
@@ -267,7 +298,8 @@ def change_folder(window, main_folder_path, scater_name, zeropeak_name, spectrum
     print("Mask map calculated.")
     window.antimask = mask_creating(element_for_mask, window.output_path, window.subfolder_path, window.prename, treshold, window.color_of_heatmap)
     print("Antimask map calculated.")
-    mask_number_of_counts = file_to_list(Path.joinpath(window.subfolder_path, f"{window.prename}{element}"))
+    
+    mask_number_of_counts = file_to_list(Path.joinpath(window.subfolder_path, f"{window.prename}{element_for_mask}"))
 
     figure, ax = plt.subplots()
     canvas = FigureCanvas(figure)
@@ -285,29 +317,44 @@ def change_folder(window, main_folder_path, scater_name, zeropeak_name, spectrum
 
     
 def calculate_livetime(zeropeak_name, zeropeak_dict, window):
-    window.zeropeak_matrix = np.array(file_to_list(Path.joinpath(window.subfolder_path, f"{window.prename}{zeropeak_name}")))
-    window.livetime_matrix = np.array(LT_calc(window.zeropeak_matrix, float(zeropeak_dict["a"]), float(zeropeak_dict["b"])))
-    print("Livetime matrix calculated.")
-   
+    try:
+        window.zeropeak_matrix = np.array(file_to_list(Path.joinpath(window.subfolder_path, f"{window.prename}{zeropeak_name}")))
+    except Exception as e:
+        print(f"Couldn't find data {Path.joinpath(window.subfolder_path, f"{window.prename}{zeropeak_name}")}: {e}")
+    try:
+        window.livetime_matrix = np.array(LT_calc(window.zeropeak_matrix, float(zeropeak_dict["a"]), float(zeropeak_dict["b"])))
+        print("Livetime matrix calculated.")
+    except Exception as e:
+        print(f"Couldn't calculate livetime matrix: {e}")
+        print(f"Zeropeak dict type: {type(zeropeak_dict["a"])}, b: {type(zeropeak_dict["b"])}")
+        print(f"Zeropeak matrix type: {type(window.zeropeak_matrix)}")
+        print(f"Zeropeak matrix: {window.zeropeak_matrix}")
+        print(f"Zeropeak dict: {zeropeak_dict}")
+        
+        
 def file_to_list(input):
     """Loads a client file regardless of whether it's .txt or .csv."""
     # Check both possible extensions
-    txt_path = os.path.join(input,".txt")
-    csv_path = os.path.join(input,".csv")
+    txt_path = input.with_suffix(".txt")
+    print(f"txt_path: {txt_path}")
+    csv_path = input.with_suffix(".csv")
+    print(f"csv_path: {csv_path}")
     
     try:
         if os.path.exists(txt_path):
-            with open(input, 'r') as file:
+            with open(txt_path, 'r') as file:
                 first_line = file.readline()
                 delimiter = ';' if ';' in first_line else ','
-            converted_array = np.loadtxt(input, delimiter=delimiter)
+            converted_array = np.loadtxt(txt_path, delimiter=delimiter)
             return np.array(converted_array)
         elif os.path.exists(csv_path):
-            with open(input, 'r') as file:
+            with open(csv_path, 'r') as file:
                 first_line = file.readline()
                 delimiter = ';' if ';' in first_line else ','
-            converted_array = np.loadtxt(input, delimiter=delimiter)
+            converted_array = np.loadtxt(csv_path, delimiter=delimiter)
             return np.array(converted_array)
+        else:
+            print(f"File not found: {txt_path} or {csv_path}")
     except Exception as e:
         print(f"Couldn't find data: {e}")
         print(input)
@@ -350,7 +397,6 @@ def mask_creating(element, output_path, folder_path, prename, treshold, color):
     return mask
 
 def antimask_creating(element, output_path, folder_path, prename, treshold, color):
-    table_of_mask = None
     file_path = Path.joinpath(folder_path, f"{prename}{element}")
     table_of_mask = file_to_list(file_path)
     maxof_masktable = np.max(table_of_mask)
@@ -393,7 +439,7 @@ def absorption_coefficient(sample_dict, Ee):
             print(f"Non-numeric value encountered for element {key}: {value}")
     return u_E  # jednostka cm^2/g
 
-def calculate_lambda_factor(rho_D, Z, Eeffi, sample_dict):
+def calculate_lambda_factor(rho_D, Z, Eeffi, sample_dict, line):
     """
     Calculate the lambda correction factor for a given element.
 
@@ -406,10 +452,23 @@ def calculate_lambda_factor(rho_D, Z, Eeffi, sample_dict):
     Returns:
     float: The lambda correction factor.
     """
+    
     phi_in = math.radians(50)
     phi_out = math.radians(50)
 
-    Eijk = xr.LineEnergy(Z, xr.KA1_LINE)
+    if line == "K" or line == "Ka":
+        Eijk = xr.LineEnergy(Z, xr.KA1_LINE)
+    elif line == "Kb":
+        Eijk = xr.LineEnergy(Z, xr.KB1_LINE)
+    elif line == "La" or line == "L":
+        Eijk = xr.LineEnergy(Z, xr.LA1_LINE)
+    elif line == "Lb":
+        Eijk = xr.LineEnergy(Z, xr.LB1_LINE)
+    elif line == "M":
+        Eijk = xr.LineEnergy(Z, xr.MA1_LINE)
+    else:
+        print("Line not recognized.")
+        sys.exit()
     u_Eijk = absorption_coefficient(sample_dict, Eijk)
     u_Eeffi = absorption_coefficient(sample_dict, Eeffi)
 
@@ -427,9 +486,9 @@ def save_quantification_data(window):
     for key in window.elements_in_subfolder:
         element = key
         try:
-            sm = file_to_list(os.path.join(window.temporary_folder,"sample_mass_noc"))
-            table_of_smi = file_to_list(os.path.join(window.temporary_folder,f"{element}_table_of_smi"))
-            Ci_table = file_to_list(os.path.join(window.temporary_folder,f"{element}_Ci_table"))
+            sm = file_to_list(Path.joinpath(window.temporary_folder,"sample_mass_noc"))
+            table_of_smi = file_to_list(Path.joinpath(window.temporary_folder,f"{element}_table_of_smi"))
+            Ci_table = file_to_list(Path.joinpath(window.temporary_folder,f"{element}_Ci_table"))
         except Exception as e:
             print(f"Couldn't find data: {e}")
             
@@ -446,58 +505,58 @@ def save_quantification_data(window):
                                 
         if window.element_mass_png_checkbox.isChecked():
             if window.element_mass_g_checkbox.isChecked():
-                SMi_saving_plot(table_of_smi,os.path.join(window.output_path,f"{window.prename}_{element}_smi"),element,window.Pixel_size,window.color_of_heatmap,1,".png")
+                SMi_saving_plot(table_of_smi,os.path.join(window.output_path,f"{window.prename}_{element}_smi"),element,window.pixel_size,window.color_of_heatmap,1,".png")
             if window.element_mass_mg_checkbox.isChecked():
-                SMi_saving_plot(table_of_smi,os.path.join(window.output_path,f"{window.prename}_{element}_smi"),element,window.Pixel_size,window.color_of_heatmap,1000,".png")
+                SMi_saving_plot(table_of_smi,os.path.join(window.output_path,f"{window.prename}_{element}_smi"),element,window.pixel_size,window.color_of_heatmap,1000,".png")
             if window.element_mass_ug_checkbox.isChecked():
-                SMi_saving_plot(table_of_smi,os.path.join(window.output_path,f"{window.prename}_{element}_smi"),element,window.Pixel_size,window.color_of_heatmap,1000000,".png")
+                SMi_saving_plot(table_of_smi,os.path.join(window.output_path,f"{window.prename}_{element}_smi"),element,window.pixel_size,window.color_of_heatmap,1000000,".png")
             if window.element_mass_ng_checkbox.isChecked():
-                SMi_saving_plot(table_of_smi,os.path.join(window.output_path,f"{window.prename}_{element}_smi"),element,window.Pixel_size,window.color_of_heatmap,1000000000,".png")
+                SMi_saving_plot(table_of_smi,os.path.join(window.output_path,f"{window.prename}_{element}_smi"),element,window.pixel_size,window.color_of_heatmap,1000000000,".png")
 
         if window.element_mass_bmp_checkbox.isChecked():
             if window.element_mass_g_checkbox.isChecked():
-                SMi_saving_plot(table_of_smi,os.path.join(window.output_path,f"{window.prename}_{element}_smi"),element,window.Pixel_size,window.color_of_heatmap,1,".pdf")
+                SMi_saving_plot(table_of_smi,os.path.join(window.output_path,f"{window.prename}_{element}_smi"),element,window.pixel_size,window.color_of_heatmap,1,".pdf")
             if window.element_mass_mg_checkbox.isChecked():
-                SMi_saving_plot(table_of_smi,os.path.join(window.output_path,f"{window.prename}_{element}_smi"),element,window.Pixel_size,window.color_of_heatmap,1000,".pdf")
+                SMi_saving_plot(table_of_smi,os.path.join(window.output_path,f"{window.prename}_{element}_smi"),element,window.pixel_size,window.color_of_heatmap,1000,".pdf")
             if window.element_mass_ug_checkbox.isChecked():
-                SMi_saving_plot(table_of_smi,os.path.join(window.output_path,f"{window.prename}_{element}_smi"),element,window.Pixel_size,window.color_of_heatmap,1000000,".pdf")
+                SMi_saving_plot(table_of_smi,os.path.join(window.output_path,f"{window.prename}_{element}_smi"),element,window.pixel_size,window.color_of_heatmap,1000000,".pdf")
             if window.element_mass_ng_checkbox.isChecked():
-                SMi_saving_plot(table_of_smi,os.path.join(window.output_path,f"{window.prename}_{element}_smi"),element,window.Pixel_size,window.color_of_heatmap,1000000000,".pdf")
+                SMi_saving_plot(table_of_smi,os.path.join(window.output_path,f"{window.prename}_{element}_smi"),element,window.pixel_size,window.color_of_heatmap,1000000000,".pdf")
         
         if window.element_mass_tiff_checkbox.isChecked():
             if window.element_mass_g_checkbox.isChecked():
-                SMi_saving_plot(table_of_smi,os.path.join(window.output_path,f"{window.prename}_{element}_smi"),element,window.Pixel_size,window.color_of_heatmap,1,".tiff")
+                SMi_saving_plot(table_of_smi,os.path.join(window.output_path,f"{window.prename}_{element}_smi"),element,window.pixel_size,window.color_of_heatmap,1,".tiff")
             if window.element_mass_mg_checkbox.isChecked():
-                SMi_saving_plot(table_of_smi,os.path.join(window.output_path,f"{window.prename}_{element}_smi"),element,window.Pixel_size,window.color_of_heatmap,1000,".tiff")
+                SMi_saving_plot(table_of_smi,os.path.join(window.output_path,f"{window.prename}_{element}_smi"),element,window.pixel_size,window.color_of_heatmap,1000,".tiff")
             if window.element_mass_ug_checkbox.isChecked():
-                SMi_saving_plot(table_of_smi,os.path.join(window.output_path,f"{window.prename}_{element}_smi"),element,window.Pixel_size,window.color_of_heatmap,1000000,".tiff")
+                SMi_saving_plot(table_of_smi,os.path.join(window.output_path,f"{window.prename}_{element}_smi"),element,window.pixel_size,window.color_of_heatmap,1000000,".tiff")
             if window.element_mass_ng_checkbox.isChecked():
-                SMi_saving_plot(table_of_smi,os.path.join(window.output_path,f"{window.prename}_{element}_smi"),element,window.Pixel_size,window.color_of_heatmap,1000000000,".tiff")
+                SMi_saving_plot(table_of_smi,os.path.join(window.output_path,f"{window.prename}_{element}_smi"),element,window.pixel_size,window.color_of_heatmap,1000000000,".tiff")
     
         
         if window.Ci_png_checkbox.isChecked():
             if window.Ci_mg_checkbox.isChecked():
-                Ci_saving_plot(Ci_table,os.path.join(window.output_path,f"{window.prename}_{element}_Ci"),element,window.Pixel_size,window.color_of_heatmap,1000,".png")
+                Ci_saving_plot(Ci_table,os.path.join(window.output_path,f"{window.prename}_{element}_Ci"),element,window.pixel_size,window.color_of_heatmap,1000,".png")
             if window.Ci_ug_checkbox.isChecked():
-                Ci_saving_plot(Ci_table,os.path.join(window.output_path,f"{window.prename}_{element}_Ci"),element,window.Pixel_size,window.color_of_heatmap,1000000,".png")
+                Ci_saving_plot(Ci_table,os.path.join(window.output_path,f"{window.prename}_{element}_Ci"),element,window.pixel_size,window.color_of_heatmap,1000000,".png")
             if window.Ci_procent_checkbox.isChecked():
-                Ci_saving_plot(Ci_table,os.path.join(window.output_path,f"{window.prename}_{element}_Ci"),element,window.Pixel_size,window.color_of_heatmap,100,".png")
+                Ci_saving_plot(Ci_table,os.path.join(window.output_path,f"{window.prename}_{element}_Ci"),element,window.pixel_size,window.color_of_heatmap,100,".png")
                     
         if window.Ci_bmp_checkbox.isChecked():
             if window.Ci_mg_checkbox.isChecked():
-                Ci_saving_plot(Ci_table,os.path.join(window.output_path,f"{window.prename}_{element}_Ci"),element,window.Pixel_size,window.color_of_heatmap,1000,".pdf")
+                Ci_saving_plot(Ci_table,os.path.join(window.output_path,f"{window.prename}_{element}_Ci"),element,window.pixel_size,window.color_of_heatmap,1000,".pdf")
             if window.Ci_ug_checkbox.isChecked():
-                Ci_saving_plot(Ci_table,os.path.join(window.output_path,f"{window.prename}_{element}_Ci"),element,window.Pixel_size,window.color_of_heatmap,1000000,".pdf")
+                Ci_saving_plot(Ci_table,os.path.join(window.output_path,f"{window.prename}_{element}_Ci"),element,window.pixel_size,window.color_of_heatmap,1000000,".pdf")
             if window.Ci_procent_checkbox.isChecked():
-                Ci_saving_plot(Ci_table,os.path.join(window.output_path,f"{window.prename}_{element}_Ci"),element,window.Pixel_size,window.color_of_heatmap,100,".pdf")
+                Ci_saving_plot(Ci_table,os.path.join(window.output_path,f"{window.prename}_{element}_Ci"),element,window.pixel_size,window.color_of_heatmap,100,".pdf")
                 
         if window.Ci_tiff_checkbox.isChecked():
             if window.Ci_mg_checkbox.isChecked():
-                Ci_saving_plot(Ci_table,os.path.join(window.output_path,f"{window.prename}_{element}_Ci"),element,window.Pixel_size,window.color_of_heatmap,1000,".tiff")
+                Ci_saving_plot(Ci_table,os.path.join(window.output_path,f"{window.prename}_{element}_Ci"),element,window.pixel_size,window.color_of_heatmap,1000,".tiff")
             if window.Ci_ug_checkbox.isChecked():
-                Ci_saving_plot(Ci_table,os.path.join(window.output_path,f"{window.prename}_{element}_Ci"),element,window.Pixel_size,window.color_of_heatmap,1000000,".tiff")
+                Ci_saving_plot(Ci_table,os.path.join(window.output_path,f"{window.prename}_{element}_Ci"),element,window.pixel_size,window.color_of_heatmap,1000000,".tiff")
             if window.Ci_procent_checkbox.isChecked():
-                Ci_saving_plot(Ci_table,os.path.join(window.output_path,f"{window.prename}_{element}_Ci"),element,window.Pixel_size,window.color_of_heatmap,100,".tiff")
+                Ci_saving_plot(Ci_table,os.path.join(window.output_path,f"{window.prename}_{element}_Ci"),element,window.pixel_size,window.color_of_heatmap,100,".tiff")
                 
         if window.Ci_dat_checkbox.isChecked():
             if window.Ci_mg_checkbox.isChecked():
@@ -520,34 +579,37 @@ def save_quantification_data(window):
                                 
         if window.sample_mass_png_checkbox.isChecked():
             if window.sample_mass_g_checkbox.isChecked():
-                SM_saving_plot(sm,os.path.join(window.output_path,f"{window.prename}_sm"),window.Pixel_size,window.color_of_heatmap,1,".png")
+                SM_saving_plot(sm,os.path.join(window.output_path,f"{window.prename}_sm"),window.pixel_size,window.color_of_heatmap,1,".png")
             if window.sample_mass_mg_checkbox.isChecked():
-                SM_saving_plot(sm,os.path.join(window.output_path,f"{window.prename}_sm"),window.Pixel_size,window.color_of_heatmap,1000,".png")
+                SM_saving_plot(sm,os.path.join(window.output_path,f"{window.prename}_sm"),window.pixel_size,window.color_of_heatmap,1000,".png")
             if window.sample_mass_ug_checkbox.isChecked():
-                SM_saving_plot(sm,os.path.join(window.output_path,f"{window.prename}_sm"),window.Pixel_size,window.color_of_heatmap,1000000,".png")
+                SM_saving_plot(sm,os.path.join(window.output_path,f"{window.prename}_sm"),window.pixel_size,window.color_of_heatmap,1000000,".png")
             if window.sample_mass_ng_checkbox.isChecked():
-                SM_saving_plot(sm,os.path.join(window.output_path,f"{window.prename}_sm"),window.Pixel_size,window.color_of_heatmap,1000000000,".png")
+                SM_saving_plot(sm,os.path.join(window.output_path,f"{window.prename}_sm"),window.pixel_size,window.color_of_heatmap,1000000000,".png")
 
         if window.sample_mass_bmp_checkbox.isChecked():
             if window.sample_mass_g_checkbox.isChecked():
-                SM_saving_plot(sm,os.path.join(window.output_path,f"{window.prename}_sm"),window.Pixel_size,window.color_of_heatmap,1,".pdf")
+                SM_saving_plot(sm,os.path.join(window.output_path,f"{window.prename}_sm"),window.pixel_size,window.color_of_heatmap,1,".pdf")
             if window.sample_mass_mg_checkbox.isChecked():
-                SM_saving_plot(sm,os.path.join(window.output_path,f"{window.prename}_sm"),window.Pixel_size,window.color_of_heatmap,1000,".pdf")
+                SM_saving_plot(sm,os.path.join(window.output_path,f"{window.prename}_sm"),window.pixel_size,window.color_of_heatmap,1000,".pdf")
             if window.sample_mass_ug_checkbox.isChecked():
-                SM_saving_plot(sm,os.path.join(window.output_path,f"{window.prename}_sm"),window.Pixel_size,window.color_of_heatmap,1000000,".pdf")
+                SM_saving_plot(sm,os.path.join(window.output_path,f"{window.prename}_sm"),window.pixel_size,window.color_of_heatmap,1000000,".pdf")
             if window.sample_mass_ng_checkbox.isChecked():
-                SM_saving_plot(sm,os.path.join(window.output_path,f"{window.prename}_sm"),window.Pixel_size,window.color_of_heatmap,1000000000,".pdf")
+                SM_saving_plot(sm,os.path.join(window.output_path,f"{window.prename}_sm"),window.pixel_size,window.color_of_heatmap,1000000000,".pdf")
         
         if window.sample_mass_tiff_checkbox.isChecked():
             if window.sample_mass_g_checkbox.isChecked():
-                SM_saving_plot(sm,os.path.join(window.output_path,f"{window.prename}_sm"),window.Pixel_size,window.color_of_heatmap,1,".tiff")
+                SM_saving_plot(sm,os.path.join(window.output_path,f"{window.prename}_sm"),window.pixel_size,window.color_of_heatmap,1,".tiff")
             if window.sample_mass_mg_checkbox.isChecked():
-                SM_saving_plot(sm,os.path.join(window.output_path,f"{window.prename}_sm"),window.Pixel_size,window.color_of_heatmap,1000,".tiff")
+                SM_saving_plot(sm,os.path.join(window.output_path,f"{window.prename}_sm"),window.pixel_size,window.color_of_heatmap,1000,".tiff")
             if window.sample_mass_ug_checkbox.isChecked():
-                SM_saving_plot(sm,os.path.join(window.output_path,f"{window.prename}_sm"),window.Pixel_size,window.color_of_heatmap,1000000,".tiff")
+                SM_saving_plot(sm,os.path.join(window.output_path,f"{window.prename}_sm"),window.pixel_size,window.color_of_heatmap,1000000,".tiff")
             if window.sample_mass_ng_checkbox.isChecked():
-                SM_saving_plot(sm,os.path.join(window.output_path,f"{window.prename}_sm"),window.Pixel_size,window.color_of_heatmap,1000000000,".tiff")
+                SM_saving_plot(sm,os.path.join(window.output_path,f"{window.prename}_sm"),window.pixel_size,window.color_of_heatmap,1000000000,".tiff")
 
+
+    print("Quantification data saved.")
+    
 def Ci_saving_dat(input, path, element, size):
     unit = {1000: "_mg_g", 1000000: "_ug_g", 1: "_g_g", 1000000000: "_ng_g"}.get(size, "")
     Ci_table = np.array(input) * size

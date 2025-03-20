@@ -22,6 +22,7 @@ def quantify(window, main_folder_path, pixel_size_value, inputfile_name,
              zeropeak_name, scatter_name, sample_matrix_name, treshhold_value, 
              spectrum, zeropeak_coefficients_name, scatter_coefficients_name):
     print("Quantifying...")
+    window.pixel_size = pixel_size_value
     folder = window.current_folder_name
     # Create folder for outputs
     if not Path.joinpath(main_folder_path, "temporary").exists():
@@ -73,17 +74,17 @@ def quantify(window, main_folder_path, pixel_size_value, inputfile_name,
     print("Sample mass calculated.")
     for key in window.elements_in_subfolder:
             element_line = key
-            element = element_line.split()[0]
+            element = element_line.split("-")[0]
             try:
-                line = element_line.split()[1]
+                line = element_line.split("-")[1]
             except Exception as e:
                 line = "K"
-                print (f"Error: {e}")
+                print (f"Error: {e}. Used default line: {line}")
             
-            print(f"Processing element: {element} ...")
+            print(f"Processing element: {element_line} ...")
             if Path.joinpath(window.subfolder_path, f"{window.prename}{element_line}.txt").exists() or Path.joinpath(window.subfolder_path, f"{window.prename}{element_line}.csv").exists():
                 K_i = float(window.k_value_per_element_dict[element])
-                counts_data = Path.joinpath(window.subfolder_path,f"{window.prename}{element}")
+                counts_data = Path.joinpath(window.subfolder_path,f"{window.prename}{element_line}")
                 counts_table = utils.file_to_list(counts_data)
                 table_of_smi = np.zeros_like(counts_table)
                 print("Counts table loaded.")
@@ -117,7 +118,7 @@ def quantify(window, main_folder_path, pixel_size_value, inputfile_name,
                 for i, j in tqdm(indices, desc="Processing elements"):
                     value = surface_mass_array[i, j]
                     smi_value = table_of_smi[i, j]
-                    lambda_factor_value = utils.calculate_lambda_factor(value, int(window.z_number_per_element_dict[element]),float(window.energy_per_element_dict[element]), window.concentration_per_element_dict )
+                    lambda_factor_value = utils.calculate_lambda_factor(value, int(window.z_number_per_element_dict[element]),float(window.energy_per_element_dict[element]), window.concentration_per_element_dict, line)
                     lambda_factor[i, j] = lambda_factor_value
                     
                     if value > 0.3 * median_value and smi_value >= 0:

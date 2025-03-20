@@ -26,25 +26,25 @@ def main(window, start_window_instance, title, main_folder_path, pixel_size_valu
         start_window_instance.input_info_label.setStyleSheet("color: red")
         window.close()
     else:
-        if not file_exists(os.path.join(main_folder_path, inputfile_name)):
+        if (not file_exists(os.path.join(main_folder_path, inputfile_name+ ".txt"))) and (not file_exists(os.path.join(main_folder_path, inputfile_name+ ".csv"))):
             start_window_instance.input_info_label.setText(
                 "There is no input file in the specified folder.")
             start_window_instance.input_info_label.setStyleSheet("color: red")
-            print(os.path.join(main_folder_path, inputfile_name))
+            print(os.path.join(main_folder_path, inputfile_name+ ".txt"))
             window.close()
-        elif not file_exists(os.path.join(main_folder_path, zeropeak_coefficients_name)) and spectrum == "Poli":
+        elif (not file_exists(os.path.join(main_folder_path, zeropeak_coefficients_name + ".txt"))  and not file_exists(os.path.join(main_folder_path, zeropeak_coefficients_name + ".csv")))  and spectrum == "Poli":
             start_window_instance.input_info_label.setText(
                 "There is no zero peak file in the specified folder.")
             start_window_instance.input_info_label.setStyleSheet("color: red")
             print(os.path.join(main_folder_path, zeropeak_coefficients_name))
             window.close()
-        elif not file_exists(os.path.join(main_folder_path, scatter_coefficients_name)):
+        elif not file_exists(os.path.join(main_folder_path, scatter_coefficients_name + ".txt")) and not file_exists(os.path.join(main_folder_path, scatter_coefficients_name + ".csv")):
             start_window_instance.input_info_label.setText(
                 "There is no scatter file in the specified folder.")
             start_window_instance.input_info_label.setStyleSheet("color: red")
             print(os.path.join(main_folder_path, scatter_coefficients_name))
             window.close()
-        elif not file_exists(os.path.join(main_folder_path, sample_matrix_name)):
+        elif not file_exists(os.path.join(main_folder_path, sample_matrix_name + ".txt")) and not file_exists(os.path.join(main_folder_path, sample_matrix_name + ".csv")):
             start_window_instance.input_info_label.setText(
                 "There is no sample matrix file in the specified folder.")
             start_window_instance.input_info_label.setStyleSheet("color: red")

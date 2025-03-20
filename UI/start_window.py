@@ -78,18 +78,18 @@ class StartWindow(QMainWindow):
         self.Pixel = QLineEdit(self)
         self.Pixel.setPlaceholderText("1000")
         self.Inputfile = QLineEdit(self)
-        self.Inputfile.setPlaceholderText("inputfile.txt")
+        self.Inputfile.setPlaceholderText("inputfile")
         self.Zeropeak = QLineEdit(self)
         self.Zeropeak.setPlaceholderText("zeropeak")
         self.Scater = QLineEdit(self)    
         self.Scater.setPlaceholderText("scater")
         self.SampMatrix = QLineEdit(self)
-        self.SampMatrix.setPlaceholderText("sample_matrix.txt")
+        self.SampMatrix.setPlaceholderText("sample_matrix")
         self.Treshold = QLineEdit(self)
         self.Scater_Coefficients = QLineEdit(self)
-        self.Scater_Coefficients.setPlaceholderText("scater_coefficients.txt")
+        self.Scater_Coefficients.setPlaceholderText("scater_coefficients")
         self.Zeropeak_Coefficients = QLineEdit(self)
-        self.Zeropeak_Coefficients.setPlaceholderText("zeropeak_coefficients.txt")
+        self.Zeropeak_Coefficients.setPlaceholderText("zeropeak_coefficients")
         self.Treshold.setPlaceholderText("10")
         
         # Checkboxes
@@ -185,17 +185,17 @@ class StartWindow(QMainWindow):
         if self.pixel_size_value == "":
             self.pixel_size_value = 1000
         if self.inputfile_name == "":
-            self.inputfile_name = "inputfile.txt"
+            self.inputfile_name = "inputfile"
         if self.zeropeak_name == "":
             self.zeropeak_name = "zeropeak"
         if self.scatter_name == "":
             self.scatter_name = "scater"
         if self.zeropeak_coefficients_name == "":
-            self.zeropeak_coefficients_name = "zeropeak_coefficients.txt"
+            self.zeropeak_coefficients_name = "zeropeak_coefficients"
         if self.scatter_coefficients_name == "":
-            self.scatter_coefficients_name = "scater_coefficients.txt"
+            self.scatter_coefficients_name = "scater_coefficients"
         if self.sample_matrix_name == "":
-            self.sample_matrix_name = "sample_matrix.txt"
+            self.sample_matrix_name = "sample_matrix"
         if self.treshhold_value == "":
             self.treshhold_value = 10
         
