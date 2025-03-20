@@ -68,6 +68,8 @@ def main(window, start_window_instance, title, main_folder_path, pixel_size_valu
     print(spectrum)
     if spectrum == "Poli":
         utils.load_zeropeak_file(main_folder_path, zeropeak_coefficients_name, window)
+    elif spectrum == "Mono":
+        pass
     window.previous_element_button.setDisabled(True)
     window.next_element_button.setDisabled(True)
     window.use_for_mask_button.clicked.connect(lambda: utils.use_for_mask(window))

@@ -20,9 +20,10 @@ def main():
     pixel_size =  1000
     inputfile_name = "inputfile"
     zeropeak_name = "zeropeak"
-    scater_name ="scater"
+    scater_name ="Scat"
     sample_matrix_name = "sample_matrix"
     treshold = 10
+    spectrum = "Mono"
     color_of_heatmap ="jet"
     zeropeak_coefficients = "zeropeak_coefficients"
     scater_coefficients = "scater_coefficients"
@@ -51,13 +52,14 @@ def main():
             scater_dict["b"] = columns[1]
     print("Scater factors ready.")
 
-    with open(Path.joinpath(main_folder_path, f"{zeropeak_coefficients}.txt")) as zeropeak_factors:
-        zeropeak_dict = {}
-        for line in zeropeak_factors:
-            columns = line.strip().split()
-            zeropeak_dict["a"] = columns[0]
-            zeropeak_dict["b"] = columns[1]
-    print("Zeropeak factors ready.")
+    if spectrum == "Poli":
+        with open(Path.joinpath(main_folder_path, f"{zeropeak_coefficients}.txt")) as zeropeak_factors:
+            zeropeak_dict = {}
+            for line in zeropeak_factors:
+                columns = line.strip().split()
+                zeropeak_dict["a"] = columns[0]
+                zeropeak_dict["b"] = columns[1]
+        print("Zeropeak factors ready.")
 
     with open(Path.joinpath(main_folder_path, f"{sample_matrix_name}.txt"), "rt" ) as sample_matrix_file:
         concentration_per_element_dict = {}
@@ -81,24 +83,32 @@ def main():
     subfolder_insides = os.listdir(subfolder_path)
     elements_in_subfolder.clear()
     for file in subfolder_insides:
-        element = file.rsplit("_", 1)[-1].split(".")[0]
+        element_line = file.rsplit("_", 1)[-1].split(".")[0]
+        element = element_line.split("-")[0]
+        try:
+            line = element_line.split("-")[1]
+        except Exception as e:
+            line = "K"
+            print(f"Error: {e}")
         if element not in [scater_name, zeropeak_name]:
-            elements_in_subfolder.append(element)
+            elements_in_subfolder.append(element_line)
     prename = subfolder_insides[0].rsplit("_", 1)[0]
     prename = prename + "_"
     print("Folder selected.")
  
+    if spectrum == "Poli":
     # Calculate livetime with zeropeak
-    zeropeak_matrix = np.array(utils.file_to_list(Path.joinpath(subfolder_path, f"{prename}{zeropeak_name}.txt")))
-    livetime_matrix = np.array(utils.LT_calc(zeropeak_matrix, float(zeropeak_dict["a"]), float(zeropeak_dict["b"])))
-    print("Livetime matrix calculated.")
+        zeropeak_matrix = np.array(utils.file_to_list(Path.joinpath(subfolder_path, f"{prename}{zeropeak_name}.txt")))
+        livetime_matrix = np.array(utils.LT_calc(zeropeak_matrix, float(zeropeak_dict["a"]), float(zeropeak_dict["b"])))
+        print("Livetime matrix calculated.")
 
     if not Path.joinpath(main_folder_path, f"{current_folder}_output").exists():
         Path.joinpath(main_folder_path, f"{current_folder}_output").mkdir() 
     output_path = Path.joinpath(main_folder_path, f"{current_folder}_output")
     print("Output folder created.")
 
-    utils.output_to_file(livetime_matrix, Path.joinpath(output_path, f"{prename}livetime_map"))
+    if spectrum == "Poli":
+        utils.output_to_file(livetime_matrix, Path.joinpath(output_path, f"{prename}livetime_map"))
        
     element_for_mask = None
     mask_map = utils.mask_creating(element_for_mask, output_path, subfolder_path, prename, treshold, color_of_heatmap)
@@ -133,9 +143,15 @@ def main():
         subfolder_insides = os.listdir(subfolder_path)
         elements_in_subfolder.clear()
         for file in subfolder_insides:
-            element = file.rsplit("_", 1)[-1].split(".")[0]
+            element_line = file.rsplit("_", 1)[-1].split(".")[0]
+            element = element_line.split("-")[0]
+            try:
+                line = element_line.split("-")[1]
+            except Exception as e:
+                line = "K"
+                print(f"Error: {e}")
             if element not in [scater_name, zeropeak_name]:
-                elements_in_subfolder.append(element)
+                elements_in_subfolder.append(element_line)
         print(f"Processing folder: {current_folder}. Found elements: {elements_in_subfolder}")
         file_names = os.listdir(Path.joinpath(main_folder_path, folder))
         first_file = file_names[0]
@@ -144,17 +160,19 @@ def main():
         prename = prename + "_"
         separator = "_"
 
+        if spectrum == "Poli":
         # Calculate livetime with zeropeak
-        zeropeak_matrix = np.array(utils.file_to_list(Path.joinpath(subfolder_path, f"{prename}{zeropeak_name}.txt")))
-        livetime_matrix = np.array(utils.LT_calc(zeropeak_matrix, float(zeropeak_dict["a"]), float(zeropeak_dict["b"])))
-        print("Livetime matrix calculated.")
+            zeropeak_matrix = np.array(utils.file_to_list(Path.joinpath(subfolder_path, f"{prename}{zeropeak_name}.txt")))
+            livetime_matrix = np.array(utils.LT_calc(zeropeak_matrix, float(zeropeak_dict["a"]), float(zeropeak_dict["b"])))
+            print("Livetime matrix calculated.")
 
         if not Path.joinpath(main_folder_path, f"{current_folder}_output").exists():
             Path.joinpath(main_folder_path, f"{current_folder}_output").mkdir() 
         output_path = Path.joinpath(main_folder_path, f"{current_folder}_output")
         print("Output folder created.")
         
-        utils.output_to_file(livetime_matrix, Path.joinpath(output_path, f"livetime_map"))
+        if spectrum == "Poli":
+            utils.output_to_file(livetime_matrix, Path.joinpath(output_path, f"livetime_map"))
         element_for_mask = None
         mask_map = utils.mask_creating(element_for_mask, output_path, subfolder_path, prename, treshold, color_of_heatmap)
         print("Mask map calculated.")
@@ -169,8 +187,9 @@ def main():
         temporary_folder = Path.joinpath(main_folder_path, "temporary", f"{folder}_output")
         print("temporary folder created.")
         
-        scater_tab = np.array(utils.file_to_list(Path.joinpath(subfolder_path, f"{prename}{scater_name}.txt")))
-        scater_tab = scater_tab/livetime_matrix
+        scater_tab = np.array(utils.file_to_list(Path.joinpath(subfolder_path, f"{prename}{scater_name}.csv")))
+        if spectrum == "Poli":
+            scater_tab = scater_tab/livetime_matrix
         print("Scater table calculated.")
             
         # Create arrays for calculations
@@ -210,23 +229,33 @@ def main():
         print("Sample mass calculated.")
 
         #loop for every element in all folders
-        for key in z_number_per_element_dict:
-                element = key
+        for key in elements_in_subfolder:               
+                element = key.split("-")[0]
+                try:
+                    line = key.split("-")[1]
+                except Exception as e:
+                    line = "K"
+                    print(f"Error: {e}")
                 print(f"Processing element: {element} ...")
                 
                 #check if there is data for the element in this folder
-                if Path.joinpath(subfolder_path, f"{prename}{element}.txt").exists():
+                if Path.joinpath(subfolder_path, f"{prename}{element}-{line}.csv").exists():
                     K_i = float(k_value_per_element_dict[element])
-                    counts_data = Path.joinpath(subfolder_path,f"{prename}{element}.txt")
+                    counts_data = Path.joinpath(subfolder_path,f"{prename}{element}-{line}.csv")
                     counts_table = utils.file_to_list(counts_data)
                     table_of_smi = np.zeros_like(counts_table)
                     print("Counts table loaded.")
                     
                     counts_table = np.array(counts_table, dtype=float)
                     mask_map = np.array(mask_map, dtype=float)
-                    livetime_matrix = np.array(livetime_matrix, dtype=float)
-                    table_of_smi = (counts_table * mask_map) / livetime_matrix / K_i
-                    utils.output_to_file(table_of_smi,Path.joinpath(temporary_folder,f"{element}_table_of_smi"))    
+                    if spectrum == "Poli":
+                        livetime_matrix = np.array(livetime_matrix, dtype=float)
+                        table_of_smi = (counts_table * mask_map) / livetime_matrix / K_i
+                    elif spectrum == "Mono":
+                        table_of_smi = (counts_table * mask_map) / K_i
+                    else:
+                        print("Spectrum not recognized.")
+                    utils.output_to_file(table_of_smi,Path.joinpath(temporary_folder,f"{element}-{line}_table_of_smi"))    
                     print("SMi table calculated.")             
                             
                     
@@ -274,14 +303,14 @@ def main():
                             Ci_table_no_heatpoints[i, j] = Ci_table[i, j]    
                                 
                     
-                    utils.output_to_file(Ci_table_no_heatpoints,Path.joinpath(temporary_folder,f"{prename}{element}_Ci_no_heatpoints"))               
-                    utils.Ci_saving_dat(Ci_table, output_path, element, 1000)
-                    utils.Ci_saving_plot(Ci_table, output_path, element, pixel_size, color_of_heatmap, 1000, ".png")
-                    utils.output_to_file(lambda_factor, Path.joinpath(output_path, f"{prename}{element}_lambda"))
+                    utils.output_to_file(Ci_table_no_heatpoints,Path.joinpath(temporary_folder,f"{prename}{element}-{line}_Ci_no_heatpoints"))               
+                    utils.Ci_saving_dat(Ci_table, output_path, element_line, 1000)
+                    utils.Ci_saving_plot(Ci_table, output_path, element_line, pixel_size, color_of_heatmap, 1000, ".png")
+                    utils.output_to_file(lambda_factor, Path.joinpath(output_path, f"{prename}{element_line}_lambda"))
                     with open(Path.joinpath(output_path, f"lambda_Ci_average.txt"), "a") as f:
                         f.write(f'element:  {element},  average lambda: {format(lambda_average_factor, ".2e")},    average Ci [g/g]: {format(Ci_average_factor, ".2e")}, \n')                        
                     
-                    utils.output_to_file(Ci_table,Path.joinpath(temporary_folder,f"{prename}{element}_Ci"))            
+                    utils.output_to_file(Ci_table,Path.joinpath(temporary_folder,f"{prename}{element_line}_Ci"))            
                 else:
                     print(f"No data for element: {element}. Skipping...")
                     continue

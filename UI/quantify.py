@@ -31,8 +31,9 @@ def quantify(window, main_folder_path, pixel_size_value, inputfile_name,
     window.temporary_folder = Path.joinpath(main_folder_path, "temporary", f"{folder}_output")
     print("temporary folder created.")
     
-    scater_tab = np.array(utils.file_to_list(Path.joinpath(window.subfolder_path, f"{window.prename}{scatter_name}.txt")))
-    scater_tab = scater_tab/window.livetime_matrix
+    scater_tab = np.array(utils.file_to_list(Path.joinpath(window.subfolder_path, f"{window.prename}{scatter_name}")))
+    if spectrum == "Poli":
+        scater_tab = scater_tab/window.livetime_matrix
     print("Scater table calculated.")
         
     # Create arrays for calculations
@@ -73,22 +74,24 @@ def quantify(window, main_folder_path, pixel_size_value, inputfile_name,
     for key in window.elements_in_subfolder:
             element = key
             print(f"Processing element: {element} ...")
-            if Path.joinpath(window.subfolder_path, f"{window.prename}{element}.txt").exists():
+            if Path.joinpath(window.subfolder_path, f"{window.prename}{element}.txt").exists() or Path.joinpath(window.subfolder_path, f"{window.prename}{element}.csv").exists():
                 K_i = float(window.k_value_per_element_dict[element])
-                counts_data = Path.joinpath(window.subfolder_path,f"{window.prename}{element}.txt")
+                counts_data = Path.joinpath(window.subfolder_path,f"{window.prename}{element}")
                 counts_table = utils.file_to_list(counts_data)
                 table_of_smi = np.zeros_like(counts_table)
                 print("Counts table loaded.")
                 
                 counts_table = np.array(counts_table, dtype=float)
                 mask_map = np.array(window.mask, dtype=float)
-                window.livetime_matrix = np.array(window.livetime_matrix, dtype=float)
-                table_of_smi = (counts_table * mask_map) / window.livetime_matrix / K_i
+                if spectrum == "Poli":
+                    window.livetime_matrix = np.array(window.livetime_matrix, dtype=float)
+                    table_of_smi = (counts_table * mask_map) / window.livetime_matrix / K_i
+                elif spectrum == "Mono":
+                    table_of_smi = (counts_table * mask_map) / K_i
                 utils.output_to_file(table_of_smi,Path.joinpath(window.temporary_folder,f"{element}_table_of_smi"))    
                 print("SMi table calculated.")             
                         
                 
-
                 Ci_table = np.zeros_like(table_of_smi)
                 Ci_table_no_heatpoints = np.zeros_like(table_of_smi)
                 lambda_factor = np.zeros_like(table_of_smi)

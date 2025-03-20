@@ -38,7 +38,7 @@ def mask_creating(element, output_path, folder_path, prename, treshold, color):
     table_of_mask = None
     while table_of_mask is None:
         element = input("Enter the element for mask creation: ")
-        file_path = Path.joinpath(folder_path, f"{prename}{element}.txt")
+        file_path = Path.joinpath(folder_path, f"{prename}{element}-K.csv")
         table_of_mask = file_to_list(file_path)
     maxof_masktable = np.max(table_of_mask)
     procent = float(treshold) / 100
@@ -64,7 +64,7 @@ def antimask_creating(element, output_path, folder_path, prename, treshold, colo
     table_of_mask = None
     while table_of_mask is None:
         element = input("Enter the element for ANTImask creation: ")
-        file_path = Path.joinpath(folder_path, f"{prename}{element}.txt")
+        file_path = Path.joinpath(folder_path, f"{prename}{element}-K.csv")
         table_of_mask = file_to_list(file_path)
     maxof_masktable = np.max(table_of_mask)
     procent = float(treshold) / 100

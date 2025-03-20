@@ -40,7 +40,7 @@ def previous_element_for_mask(window, threshold):
         
         window.mask = mask_creating(element_for_mask, window.output_path, window.subfolder_path, window.prename, threshold, window.color_of_heatmap)
         window.antimask = mask_creating(element_for_mask, window.output_path, window.subfolder_path, window.prename, threshold, window.color_of_heatmap)
-        mask_number_of_counts = file_to_list(Path.joinpath(window.output_path, "mask_noc.txt"))
+        mask_number_of_counts = file_to_list(Path.joinpath(window.output_path, "mask_noc"))
         
         color = window.color_of_heatmap
 
@@ -72,7 +72,7 @@ def next_element_for_mask(window, threshold):
         print("Element for mask: ", element_for_mask)
         window.mask = mask_creating(element_for_mask, window.output_path, window.subfolder_path, window.prename, threshold, window.color_of_heatmap)
         window.antimask = mask_creating(element_for_mask, window.output_path, window.subfolder_path, window.prename, threshold, window.color_of_heatmap)
-        mask_number_of_counts = file_to_list(Path.joinpath(window.output_path, "mask_noc.txt"))
+        mask_number_of_counts = file_to_list(Path.joinpath(window.output_path, "mask_noc"))
         
         color = window.color_of_heatmap
 
@@ -103,7 +103,7 @@ def next_ci_map(window):
         window.element_name_label.setText(element)
 
         print("Ci map of element: ", element)
-        Ci_table = file_to_list(Path.joinpath(window.output_path, f"{window.prename}{element}.txt"))
+        Ci_table = file_to_list(Path.joinpath(window.output_path, f"{window.prename}{element}"))
         Ci_table_no_heatpints = file_to_list(Path.joinpath(window.temporary_folder, f"{element}_Ci_table_no_heatpoints"))
         
         
@@ -134,7 +134,7 @@ def previous_ci_map(window):
         element = window.elements_in_subfolder[window.index_of_element]
         
         print("Ci map of element: ", element)
-        Ci_table = file_to_list(Path.joinpath(window.output_path, f"{window.prename}{element}.txt"))
+        Ci_table = file_to_list(Path.joinpath(window.output_path, f"{window.prename}{element}"))
         Ci_table_no_heatpints = file_to_list(Path.joinpath(window.temporary_folder, f"{element}_Ci_table_no_heatpoints"))
         
         
@@ -240,6 +240,7 @@ def change_folder(window, main_folder_path, scater_name, zeropeak_name, spectrum
     
     if spectrum == "Poli":
         calculate_livetime(zeropeak_name, window.zeropeak_dict, window)
+        output_to_file(window.livetime_matrix, Path.joinpath(window.output_path, f"livetime_map"))
         
     if not Path.joinpath(main_folder_path, f"{current_folder}_output").exists():
         Path.joinpath(main_folder_path, f"{current_folder}_output").mkdir() 
@@ -249,7 +250,7 @@ def change_folder(window, main_folder_path, scater_name, zeropeak_name, spectrum
         window.output_path = Path.joinpath(main_folder_path, f"{current_folder}_output")
         print("Output folder already exists.")
         
-    output_to_file(window.livetime_matrix, Path.joinpath(window.output_path, f"livetime_map"))
+    
         
     element_for_mask = window.elements_in_subfolder[window.index_of_element]
     window.element_name_label.setText(element_for_mask)
@@ -260,7 +261,7 @@ def change_folder(window, main_folder_path, scater_name, zeropeak_name, spectrum
     print("Mask map calculated.")
     window.antimask = mask_creating(element_for_mask, window.output_path, window.subfolder_path, window.prename, treshold, window.color_of_heatmap)
     print("Antimask map calculated.")
-    mask_number_of_counts = file_to_list(Path.joinpath(window.subfolder_path, f"{window.prename}{element}.txt"))
+    mask_number_of_counts = file_to_list(Path.joinpath(window.subfolder_path, f"{window.prename}{element}"))
 
     figure, ax = plt.subplots()
     canvas = FigureCanvas(figure)
@@ -278,17 +279,29 @@ def change_folder(window, main_folder_path, scater_name, zeropeak_name, spectrum
 
     
 def calculate_livetime(zeropeak_name, zeropeak_dict, window):
-    window.zeropeak_matrix = np.array(file_to_list(Path.joinpath(window.subfolder_path, f"{window.prename}{zeropeak_name}.txt")))
+    window.zeropeak_matrix = np.array(file_to_list(Path.joinpath(window.subfolder_path, f"{window.prename}{zeropeak_name}")))
     window.livetime_matrix = np.array(LT_calc(window.zeropeak_matrix, float(zeropeak_dict["a"]), float(zeropeak_dict["b"])))
     print("Livetime matrix calculated.")
    
 def file_to_list(input):
+    """Loads a client file regardless of whether it's .txt or .csv."""
+    # Check both possible extensions
+    txt_path = os.path.join(input,".txt")
+    csv_path = os.path.join(input,".csv")
+    
     try:
-        with open(input, 'r') as file:
-            first_line = file.readline()
-            delimiter = ';' if ';' in first_line else ','
-        converted_array = np.loadtxt(input, delimiter=delimiter)
-        return np.array(converted_array)
+        if os.path.exists(txt_path):
+            with open(input, 'r') as file:
+                first_line = file.readline()
+                delimiter = ';' if ';' in first_line else ','
+            converted_array = np.loadtxt(input, delimiter=delimiter)
+            return np.array(converted_array)
+        elif os.path.exists(csv_path):
+            with open(input, 'r') as file:
+                first_line = file.readline()
+                delimiter = ';' if ';' in first_line else ','
+            converted_array = np.loadtxt(input, delimiter=delimiter)
+            return np.array(converted_array)
     except Exception as e:
         print(f"Couldn't find data: {e}")
         print(input)
@@ -309,7 +322,7 @@ def output_to_file(input, output):
 
 def mask_creating(element, output_path, folder_path, prename, treshold, color):
     table_of_mask = None
-    file_path = Path.joinpath(folder_path, f"{prename}{element}.txt")
+    file_path = Path.joinpath(folder_path, f"{prename}{element}")
     table_of_mask = file_to_list(file_path)
     maxof_masktable = np.max(table_of_mask)
     procent = float(treshold) / 100
@@ -333,7 +346,7 @@ def mask_creating(element, output_path, folder_path, prename, treshold, color):
 
 def antimask_creating(element, output_path, folder_path, prename, treshold, color):
     table_of_mask = None
-    file_path = Path.joinpath(folder_path, f"{prename}{element}.txt")
+    file_path = Path.joinpath(folder_path, f"{prename}{element}")
     table_of_mask = file_to_list(file_path)
     maxof_masktable = np.max(table_of_mask)
     procent = float(treshold) / 100
@@ -409,9 +422,9 @@ def save_quantification_data(window):
     for key in window.elements_in_subfolder:
         element = key
         try:
-            sm = file_to_list(os.path.join(window.temporary_folder,"sample_mass_noc.txt"))
-            table_of_smi = file_to_list(os.path.join(window.temporary_folder,f"{element}_element_mass_noc.txt"))
-            Ci_table = file_to_list(os.path.join(window.temporary_folder,f"{window.prename}_{element}_Ci.txt"))
+            sm = file_to_list(os.path.join(window.temporary_folder,"sample_mass_noc"))
+            table_of_smi = file_to_list(os.path.join(window.temporary_folder,f"{element}_table_of_smi"))
+            Ci_table = file_to_list(os.path.join(window.temporary_folder,f"{element}_Ci_table"))
         except Exception as e:
             print(f"Couldn't find data: {e}")
             
@@ -529,7 +542,6 @@ def save_quantification_data(window):
                 SM_saving_plot(sm,os.path.join(window.output_path,f"{window.prename}_sm"),window.Pixel_size,window.color_of_heatmap,1000000,".tiff")
             if window.sample_mass_ng_checkbox.isChecked():
                 SM_saving_plot(sm,os.path.join(window.output_path,f"{window.prename}_sm"),window.Pixel_size,window.color_of_heatmap,1000000000,".tiff")
-
 
 def Ci_saving_dat(input, path, element, size):
     unit = {1000: "_mg_g", 1000000: "_ug_g", 1: "_g_g", 1000000000: "_ng_g"}.get(size, "")
