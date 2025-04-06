@@ -30,7 +30,7 @@ def quantify(window, main_folder_path, pixel_size_value, inputfile_name,
     if not Path.joinpath(main_folder_path, "temporary", f"{folder}_output").exists():
         Path.joinpath(main_folder_path, "temporary", f"{folder}_output").mkdir()
     window.temporary_folder = Path.joinpath(main_folder_path, "temporary", f"{folder}_output")
-    print("temporary folder created.")
+    #print("temporary folder created.")
     
     scater_tab = np.array(utils.file_to_list(Path.joinpath(window.subfolder_path, f"{window.prename}{scatter_name}")))
     if spectrum == "Poli":
@@ -56,7 +56,7 @@ def quantify(window, main_folder_path, pixel_size_value, inputfile_name,
     
     antimask_scater_masked = antimask_scater * antimask_scater_mask
     iteration_antimask = np.count_nonzero(antimask_scater_mask)
-    print(f"Antimask scater masked calculated. Iteration: {iteration_antimask}")
+    #print(f"Antimask scater masked calculated. Iteration: {iteration_antimask}")
     
     antimask_mean = np.mean(antimask_scater_masked[antimask_scater_masked != 0]) if iteration_antimask != 0 else 0
     
@@ -87,7 +87,7 @@ def quantify(window, main_folder_path, pixel_size_value, inputfile_name,
                 counts_data = Path.joinpath(window.subfolder_path,f"{window.prename}{element_line}")
                 counts_table = utils.file_to_list(counts_data)
                 table_of_smi = np.zeros_like(counts_table)
-                print("Counts table loaded.")
+                #print("Counts table loaded.")
                 
                 counts_table = np.array(counts_table, dtype=float)
                 mask_map = np.array(window.mask, dtype=float)
@@ -97,7 +97,7 @@ def quantify(window, main_folder_path, pixel_size_value, inputfile_name,
                 elif spectrum == "Mono":
                     table_of_smi = (counts_table * mask_map) / K_i
                 utils.output_to_file(table_of_smi,Path.joinpath(window.temporary_folder,f"{element_line}_table_of_smi"))    
-                print("SMi table calculated.")             
+                #print("SMi table calculated.")             
                         
                 
                 Ci_table = np.zeros_like(table_of_smi)
@@ -113,9 +113,9 @@ def quantify(window, main_folder_path, pixel_size_value, inputfile_name,
                 Ci_table_sum = 0
                 lambda_factor_sum = 0
                 
-                print("Calculating lambda factor and Ci...")
+                #print("Calculating lambda factor and Ci...")
                 
-                for i, j in tqdm(indices, desc="Processing elements"):
+                for i, j in tqdm(indices, desc="Processing element: {element_line}..."):
                     value = surface_mass_array[i, j]
                     smi_value = table_of_smi[i, j]
                     lambda_factor_value = utils.calculate_lambda_factor(value, int(window.z_number_per_element_dict[element]),float(window.energy_per_element_dict[element]), window.concentration_per_element_dict, line)
@@ -127,22 +127,30 @@ def quantify(window, main_folder_path, pixel_size_value, inputfile_name,
                     else:
                         Ci_table[i, j] = 0
                     counter +=1
-                    Ci_table_sum += Ci_table[i, j]
-                    lambda_factor_sum += lambda_factor_value
                 utils.output_to_file(Ci_table, Path.joinpath(window.temporary_folder, f"{element_line}_Ci_table"))
                 utils.output_to_file(lambda_factor, Path.joinpath(window.temporary_folder, f"{element_line}_lambda_factor"))
+                print(counter)
+                print(number)
             
                     
-                Ci_table_sum_2 = np.sum(Ci_table[table_of_smi != 0])        
+                Ci_table_sum = np.sum(Ci_table[table_of_smi != 0])  
+                lambda_factor_sum = np.sum(lambda_factor[table_of_smi != 0])      
                 lambda_average_factor = lambda_factor_sum/counter
                 Ci_average_factor = Ci_table_sum/counter
-                Ci_average_factor_2 = Ci_table_sum_2/counter
-                print(f"Avg Ci1: {Ci_average_factor:.2e}. Avg Ci2: {Ci_average_factor_2:.2e}")
+                
+                print(f"Ci table sum: {Ci_table_sum:.2e}. Lambda factor sum: {lambda_factor_sum:.2e}")
+                print(f"Avg Ci: {Ci_average_factor:.2e}. Avg lambda: {lambda_average_factor:.2e}")
                 
                 
-                for i, j in tqdm(np.ndindex(Ci_table.shape), desc="Processing Ci_table elements"):
+                with open("average_ci_lambda.txt", mode='a') as file:
+                    file.write(f"{element_line} - Avg Ci: {Ci_average_factor:.2e}, Avg lambda: {lambda_average_factor:.2e}\n")
+                    
+
+                
+                
+                for i, j in tqdm(np.ndindex(Ci_table.shape), desc="Ereasing heatpoints..."):
                     if Ci_table[i, j] > 10*float(Ci_average_factor):
-                        Ci_table_no_heatpoints[i, j] = 0   
+                        Ci_table_no_heatpoints[i, j] = Ci_average_factor
                     else:
                         Ci_table_no_heatpoints[i, j] = Ci_table[i, j]
                 utils.output_to_file(Ci_table_no_heatpoints, Path.joinpath(window.temporary_folder, f"{element_line}_Ci_table_no_heatpoints"))

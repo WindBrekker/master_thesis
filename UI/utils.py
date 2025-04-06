@@ -165,10 +165,10 @@ def load_input_files(main_folder_path, inputfile_name, window):
     folder = Path(main_folder_path)
     if os.path.exists(folder.joinpath(inputfile_name + ".txt")):
         inputfile_name = inputfile_name + ".txt"
-        print(f"{folder.joinpath(inputfile_name)} found.")
+        #print(f"{folder.joinpath(inputfile_name)} found.")
     elif os.path.exists(folder.joinpath(inputfile_name + ".csv")):
         inputfile_name = inputfile_name + ".csv"
-        print(f"{folder.joinpath(inputfile_name)} found.")
+        #print(f"{folder.joinpath(inputfile_name)} found.")
     else:
         raise FileNotFoundError(f"File not found: {folder.joinpath(inputfile_name + ".txt")} or {folder.joinpath(inputfile_name + ".csv")}")
     with folder.joinpath(inputfile_name).open("rt") as elements_file:
@@ -243,7 +243,7 @@ def box_folder_changed(window, zeropeak_name, scater_name, spectrum, main_folder
     window.previous_element_button.clicked.connect(lambda: previous_element_for_mask(window, treshold))
     window.next_element_button.clicked.connect(lambda: next_element_for_mask(window, treshold))
     current_folder = str(window.prefere_folder_combobox.currentText())
-    print(f"Current Folder selected From QCombobox: {current_folder}")
+    #print(f"Current Folder selected From QCombobox: {current_folder}")
     change_folder(window, main_folder_path, scater_name, zeropeak_name, spectrum, current_folder, treshold)
     
 def change_folder(window, main_folder_path, scater_name, zeropeak_name, spectrum, current_folder, treshold):
@@ -251,7 +251,7 @@ def change_folder(window, main_folder_path, scater_name, zeropeak_name, spectrum
     window.elements_in_subfolder = []
     window.index_of_element = 0
     current_folder = window.current_folder_name
-    print(f"Current Folder selected: {current_folder}")
+    #print(f"Current Folder selected: {current_folder}")
     main_folder_path = Path(main_folder_path)
     
     window.subfolder_path = Path.joinpath(main_folder_path, current_folder)
@@ -259,12 +259,12 @@ def change_folder(window, main_folder_path, scater_name, zeropeak_name, spectrum
     window.elements_in_subfolder.clear()
     for file in subfolder_insides:
         element_line = file.rsplit("_", 1)[-1].split(".")[0]
-        print("Element line: ", element_line)
+        #print("Element line: ", element_line)
         element = element_line.split("-")[0]
-        print("Element: ", element)
+        #print("Element: ", element)
         try:
             line = element_line.split("-")[1]
-            print("Line: ", line)
+            #print("Line: ", line)
         except Exception as e:
             line = "K"
             print(f"Error with line: {e}")
@@ -272,12 +272,12 @@ def change_folder(window, main_folder_path, scater_name, zeropeak_name, spectrum
             window.elements_in_subfolder.append(element_line)
     prename_ = subfolder_insides[0].rsplit("_", 1)[0]
     window.prename = prename_ + "_"
-    print("Folder selected.")
-    print("Elements in subfolder: ", window.elements_in_subfolder)
+    #print("Folder selected.")
+    #print("Elements in subfolder: ", window.elements_in_subfolder)
     
     if not Path.joinpath(main_folder_path, f"{current_folder}_output").exists():
         Path.joinpath(main_folder_path, f"{current_folder}_output").mkdir() 
-        print("Output folder created.")
+        #print("Output folder created.")
     else:
         print("Output folder already exists.")
     window.output_path = Path.joinpath(main_folder_path, f"{current_folder}_output")
@@ -293,7 +293,7 @@ def change_folder(window, main_folder_path, scater_name, zeropeak_name, spectrum
     window.element_name_label.setText(element_for_mask)
 
     
-    print("Element for mask: ", element_for_mask)
+    #print("Element for mask: ", element_for_mask)
     window.mask = mask_creating(element_for_mask, window.output_path, window.subfolder_path, window.prename, treshold, window.color_of_heatmap)
     print("Mask map calculated.")
     window.antimask = mask_creating(element_for_mask, window.output_path, window.subfolder_path, window.prename, treshold, window.color_of_heatmap)
@@ -336,9 +336,9 @@ def file_to_list(input):
     """Loads a client file regardless of whether it's .txt or .csv."""
     # Check both possible extensions
     txt_path = input.with_suffix(".txt")
-    print(f"txt_path: {txt_path}")
+    #print(f"txt_path: {txt_path}")
     csv_path = input.with_suffix(".csv")
-    print(f"csv_path: {csv_path}")
+    #print(f"csv_path: {csv_path}")
     
     try:
         if os.path.exists(txt_path):
@@ -477,7 +477,7 @@ def calculate_lambda_factor(rho_D, Z, Eeffi, sample_dict, line):
         correction_factor = 0
     else:
         numerator = 1 - math.exp(-denominator)
-        correction_factor = denominator / numerator
+        correction_factor = numerator/denominator
     return correction_factor
 
 ##---------------------------Saving---------------------------##

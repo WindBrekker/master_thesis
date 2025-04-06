@@ -353,6 +353,13 @@ if __name__ == "__main__":
 ###----------------------------------------- MARZEC.
 
 # Kod w formie .exe
+# Sprawdzic dane z inżynierki - czy są pprawnie analizowane.
+# porównanie wyników składu pierwistkowego dla tej amej tkanki ale o różnej grubości. 
+# potem to samo z czterema setami danych.
+# Preanalizować zmineralizowaną tkankę.
+# Dodaj opcję zmiany ednostki w takcie posglądu mapy
+
+
 
 ###----------------------------------------- KWIECIEŃ.
 
