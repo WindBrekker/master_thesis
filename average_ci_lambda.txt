@@ -1,11 +1,162 @@
-Ca - Avg Ci: 9.66e-05, Avg lambda: 8.90e-01
-Cl - Avg Ci: 9.30e-04, Avg lambda: 7.14e-01
-Cr - Avg Ci: 1.95e-05, Avg lambda: 9.62e-01
-Cu - Avg Ci: 1.25e-05, Avg lambda: 9.87e-01
-Fe - Avg Ci: 7.88e-05, Avg lambda: 9.76e-01
-K - Avg Ci: 5.36e-03, Avg lambda: 8.61e-01
-Mg - Avg Ci: 1.98e-05, Avg lambda: 2.09e-01
-Na - Avg Ci: 7.74e-05, Avg lambda: 1.31e-01
-P - Avg Ci: 1.91e-03, Avg lambda: 5.21e-01
-S - Avg Ci: 1.31e-03, Avg lambda: 6.10e-01
-Zn - Avg Ci: 2.75e-05, Avg lambda: 9.90e-01
+Ca - Avg Ci: 1.09e-04, Avg lambda: 8.90e-01,
+Cl - Avg Ci: 1.83e-03, Avg lambda: 7.14e-01,
+Cr - Avg Ci: 2.04e-05, Avg lambda: 9.62e-01,
+Cu - Avg Ci: 1.30e-05, Avg lambda: 9.87e-01, 
+Fe - Avg Ci: 1.05e-04, Avg lambda: 9.76e-01,
+K - Avg Ci: 7.55e-03, Avg lambda: 8.61e-01, 
+Mg - Avg Ci: 4.45e-04, Avg lambda: 2.09e-01, 
+Na - Avg Ci: 4.71e-03, Avg lambda: 1.31e-01, 
+P - Avg Ci: 6.23e-03, Avg lambda: 5.21e-01, 
+S - Avg Ci: 3.52e-03, Avg lambda: 6.10e-01,
+Zn - Avg Ci: 3.14e-05, Avg lambda: 9.90e-01,
+Ca - Avg Ci: 1.09e-04, Avg lambda: 8.90e-01, Avg Ci2: 4.6299675935553455e-06, Avg lambda2: 0.03786273387533076 
+Cl - Avg Ci: 1.83e-03, Avg lambda: 7.14e-01, Avg Ci2: 0.001416874913271182, Avg lambda2: 0.5528617442959726 
+Cr - Avg Ci: 2.04e-05, Avg lambda: 9.62e-01, Avg Ci2: 1.5748789672101952e-05, Avg lambda2: 0.7409193665600131 
+Cu - Avg Ci: 1.30e-05, Avg lambda: 9.87e-01, Avg Ci2: 8.863258507369368e-06, Avg lambda2: 0.6705777130284603 
+Fe - Avg Ci: 1.05e-04, Avg lambda: 9.76e-01, Avg Ci2: 8.098018641187091e-05, Avg lambda2: 0.7553880609805653 
+K - Avg Ci: 7.55e-03, Avg lambda: 8.61e-01, Avg Ci2: 0.00584230441587586, Avg lambda2: 0.6662789923079403 
+Mg - Avg Ci: 4.45e-04, Avg lambda: 2.09e-01, Avg Ci2: 0.0003440844619729337, Avg lambda2: 0.16214163611309526 
+Na - Avg Ci: 4.71e-03, Avg lambda: 1.31e-01, Avg Ci2: 0.0036474651147415885, Avg lambda2: 0.10160590681393283 
+P - Avg Ci: 6.23e-03, Avg lambda: 5.21e-01, Avg Ci2: 0.004820484922486555, Avg lambda2: 0.4034655977867499 
+S - Avg Ci: 3.52e-03, Avg lambda: 6.10e-01, Avg Ci2: 0.002721518698465636, Avg lambda2: 0.47225692830654303 
+Zn - Avg Ci: 3.14e-05, Avg lambda: 9.90e-01, Avg Ci2: 2.3996365568794337e-05, Avg lambda2: 0.7565017352866176 
+Ca - Avg Ci: 1.09e-04, Avg lambda: 8.90e-01, Avg Ci2: 4.6299675935553455e-06, Avg lambda2: 0.03786273387533076 
+Cl - Avg Ci: 1.83e-03, Avg lambda: 7.14e-01, Avg Ci2: 0.001416874913271182, Avg lambda2: 0.5528617442959726 
+Cr - Avg Ci: 2.04e-05, Avg lambda: 9.62e-01, Avg Ci2: 1.5748789672101952e-05, Avg lambda2: 0.7409193665600131 
+Cu - Avg Ci: 1.30e-05, Avg lambda: 9.87e-01, Avg Ci2: 8.863258507369368e-06, Avg lambda2: 0.6705777130284603 
+Fe - Avg Ci: 1.05e-04, Avg lambda: 9.76e-01, Avg Ci2: 8.098018641187091e-05, Avg lambda2: 0.7553880609805653 
+K - Avg Ci: 7.55e-03, Avg lambda: 8.61e-01, Avg Ci2: 0.00584230441587586, Avg lambda2: 0.6662789923079403 
+Mg - Avg Ci: 4.45e-04, Avg lambda: 2.09e-01, Avg Ci2: 0.0003440844619729337, Avg lambda2: 0.16214163611309526 
+Na - Avg Ci: 4.71e-03, Avg lambda: 1.31e-01, Avg Ci2: 0.0036474651147415885, Avg lambda2: 0.10160590681393283 
+P - Avg Ci: 6.23e-03, Avg lambda: 5.21e-01, Avg Ci2: 0.004820484922486555, Avg lambda2: 0.4034655977867499 
+S - Avg Ci: 3.52e-03, Avg lambda: 6.10e-01, Avg Ci2: 0.002721518698465636, Avg lambda2: 0.47225692830654303 
+Zn - Avg Ci: 3.14e-05, Avg lambda: 9.90e-01, Avg Ci2: 2.3996365568794337e-05, Avg lambda2: 0.7565017352866176 
+Ca-Ka - Avg Ci: inf, Avg lambda: 9.47e-01, Avg Ci2: inf, Avg lambda2: 0.9061046400730918 
+Ca-Kb - Avg Ci: inf, Avg lambda: 9.57e-01, Avg Ci2: inf, Avg lambda2: 0.7868164683461593 
+Cl-Ka - Avg Ci: inf, Avg lambda: 8.72e-01, Avg Ci2: inf, Avg lambda2: 0.834197440549735 
+Cu-Ka - Avg Ci: inf, Avg lambda: 9.91e-01, Avg Ci2: inf, Avg lambda2: 0.8703104884410802 
+Fe-Ka - Avg Ci: inf, Avg lambda: 9.85e-01, Avg Ci2: inf, Avg lambda2: 0.9418141721954437 
+K-Ka - Avg Ci: inf, Avg lambda: 9.30e-01, Avg Ci2: inf, Avg lambda2: 0.8896826978718746 
+Mn-Ka - Avg Ci: inf, Avg lambda: 9.83e-01, Avg Ci2: inf, Avg lambda2: 0.3402931781166722 
+P-Ka - Avg Ci: inf, Avg lambda: 7.57e-01, Avg Ci2: inf, Avg lambda2: 0.7245714579812783 
+S-Ka - Avg Ci: inf, Avg lambda: 8.24e-01, Avg Ci2: inf, Avg lambda2: 0.7886307927317817 
+Zn-Ka - Avg Ci: inf, Avg lambda: 9.91e-01, Avg Ci2: inf, Avg lambda2: 0.9481639672278945 
+Ca - Avg Ci: 6.92e-03, Avg lambda: 1.19e-03, Avg Ci2: 0.004394838588099566, Avg lambda2: 0.0007530863284888796 
+Cl - Avg Ci: 6.37e-05, Avg lambda: 3.85e-04, Avg Ci2: 7.072847309180395e-06, Avg lambda2: 4.281824389016674e-05 
+Cu - Avg Ci: 2.78e-06, Avg lambda: 1.05e-02, Avg Ci2: 1.3009824023871557e-06, Avg lambda2: 0.0049240978862724605 
+Fe - Avg Ci: 2.23e-05, Avg lambda: 5.55e-03, Avg Ci2: 1.4028436666497993e-05, Avg lambda2: 0.0034902848210460677 
+K - Avg Ci: 5.56e-03, Avg lambda: 8.80e-04, Avg Ci2: 0.0035277155259408953, Avg lambda2: 0.0005583184305995972 
+Mn - Avg Ci: 1.00e-05, Avg lambda: 4.39e-03, Avg Ci2: 5.794740109357042e-06, Avg lambda2: 0.002538243817289506 
+P - Avg Ci: 1.49e-03, Avg lambda: 1.82e-04, Avg Ci2: 0.0009468235103970826, Avg lambda2: 0.00011539687416571957 
+S - Avg Ci: 9.17e-04, Avg lambda: 2.49e-04, Avg Ci2: 0.0005817892256410177, Avg lambda2: 0.00015775231481126472 
+Zn - Avg Ci: 3.42e-06, Avg lambda: 1.28e-02, Avg Ci2: 1.7476520780675113e-06, Avg lambda2: 0.00655569883561132 
+Ca - Avg Ci: 3.94e-04, Avg lambda: 9.14e-01, Avg Ci2: 0.0002981469454061809, Avg lambda2: 0.69107726386603 
+Cl - Avg Ci: 3.05e-03, Avg lambda: 7.62e-01, Avg Ci2: 0.002306724179762781, Avg lambda2: 0.5759589589951387 
+Cr - Avg Ci: 1.51e-04, Avg lambda: 9.69e-01, Avg Ci2: 0.00011432839551687326, Avg lambda2: 0.732727449011886 
+Cu - Avg Ci: 1.96e-04, Avg lambda: 9.90e-01, Avg Ci2: 0.00014813635572349156, Avg lambda2: 0.748402626334328 
+Fe - Avg Ci: 4.91e-04, Avg lambda: 9.81e-01, Avg Ci2: 0.0003711015377534793, Avg lambda2: 0.741536003946881 
+K - Avg Ci: 4.51e-03, Avg lambda: 8.86e-01, Avg Ci2: 0.003408017903433066, Avg lambda2: 0.6702196824619644 
+Mg - Avg Ci: 1.13e-03, Avg lambda: 2.62e-01, Avg Ci2: 0.000857035657656353, Avg lambda2: 0.19784128454940583 
+Na - Avg Ci: 4.13e-03, Avg lambda: 1.67e-01, Avg Ci2: 0.003123801648293391, Avg lambda2: 0.12614638539614165 
+P - Avg Ci: 5.56e-03, Avg lambda: 5.87e-01, Avg Ci2: 0.004201853738057465, Avg lambda2: 0.44382102081490715 
+S - Avg Ci: 4.14e-03, Avg lambda: 6.69e-01, Avg Ci2: 0.0031275429185741842, Avg lambda2: 0.5059954507625878 
+Zn - Avg Ci: 2.51e-04, Avg lambda: 9.92e-01, Avg Ci2: 0.00018999416874130012, Avg lambda2: 0.7498089178109969 
+Ca - Avg Ci: 3.99e-04, Avg lambda: 8.92e-01, Avg Ci2: 0.00029411242127365134, Avg lambda2: 0.6573376539982713 
+Cl - Avg Ci: 3.08e-03, Avg lambda: 7.10e-01, Avg Ci2: 0.00226655742969923, Avg lambda2: 0.5231231089332347 
+Cr - Avg Ci: 1.35e-04, Avg lambda: 9.61e-01, Avg Ci2: 9.97285853957341e-05, Avg lambda2: 0.7079975796662763 
+Cu - Avg Ci: 1.78e-04, Avg lambda: 9.87e-01, Avg Ci2: 0.00013111894973507598, Avg lambda2: 0.7273376036527692 
+Fe - Avg Ci: 4.75e-04, Avg lambda: 9.75e-01, Avg Ci2: 0.000349909355956054, Avg lambda2: 0.7188474062008874 
+K - Avg Ci: 4.66e-03, Avg lambda: 8.58e-01, Avg Ci2: 0.0034368626631028944, Avg lambda2: 0.632375328990963 
+Mg - Avg Ci: 1.30e-03, Avg lambda: 2.08e-01, Avg Ci2: 0.00095878136292849, Avg lambda2: 0.15318830392693097 
+Na - Avg Ci: 4.73e-03, Avg lambda: 1.31e-01, Avg Ci2: 0.0034880555889596487, Avg lambda2: 0.09623806998390363 
+P - Avg Ci: 6.15e-03, Avg lambda: 5.16e-01, Avg Ci2: 0.004529918197595703, Avg lambda2: 0.3805937327560682 
+S - Avg Ci: 4.49e-03, Avg lambda: 6.05e-01, Avg Ci2: 0.003309434883275291, Avg lambda2: 0.4460300748636259 
+Zn - Avg Ci: 2.30e-04, Avg lambda: 9.89e-01, Avg Ci2: 0.00016976447275988477, Avg lambda2: 0.7290798807278179 
+Ca - Avg Ci: 1.76e-03, Avg lambda: 7.87e-01, Avg Ci2: 5.9373562550837245e-06, Avg lambda2: 0.002658599515711901 
+Cl - Avg Ci: 4.13e-03, Avg lambda: 5.23e-01, Avg Ci2: 1.3949601905923498e-05, Avg lambda2: 0.0017682984924261742 
+Cr - Avg Ci: 1.76e-04, Avg lambda: 9.17e-01, Avg Ci2: 5.94389723650858e-07, Avg lambda2: 0.003098498360384069 
+Cu - Avg Ci: 2.40e-04, Avg lambda: 9.72e-01, Avg Ci2: 8.116184286724191e-07, Avg lambda2: 0.0032840440080823714 
+Fe - Avg Ci: 6.87e-04, Avg lambda: 9.47e-01, Avg Ci2: 2.3218503410708576e-06, Avg lambda2: 0.003201336360676581 
+K - Avg Ci: 6.79e-03, Avg lambda: 7.29e-01, Avg Ci2: 2.2962500698333555e-05, Avg lambda2: 0.0024646696292468344 
+Mg - Avg Ci: 2.11e-03, Avg lambda: 1.54e-01, Avg Ci2: 7.13328894113953e-06, Avg lambda2: 0.0005201888289005558 
+Na - Avg Ci: 7.47e-03, Avg lambda: 1.09e-01, Avg Ci2: 2.5239560390740725e-05, Avg lambda2: 0.00036942965128567047 
+P - Avg Ci: 9.49e-03, Avg lambda: 3.40e-01, Avg Ci2: 3.206409348705119e-05, Avg lambda2: 0.0011482792529205678 
+S - Avg Ci: 6.96e-03, Avg lambda: 4.14e-01, Avg Ci2: 2.3536364372188058e-05, Avg lambda2: 0.0013999929046790273 
+Zn - Avg Ci: 3.26e-04, Avg lambda: 9.77e-01, Avg Ci2: 1.1033634300859122e-06, Avg lambda2: 0.003301262882885177 
+Ca - Avg Ci: 3.99e-04, Avg lambda: 8.92e-01, Avg Ci2: 0.00029411242127365134, Avg lambda2: 0.6573376539982713 
+Cl - Avg Ci: 3.08e-03, Avg lambda: 7.10e-01, Avg Ci2: 0.00226655742969923, Avg lambda2: 0.5231231089332347 
+Cr - Avg Ci: 1.35e-04, Avg lambda: 9.61e-01, Avg Ci2: 9.97285853957341e-05, Avg lambda2: 0.7079975796662763 
+Cu - Avg Ci: 1.78e-04, Avg lambda: 9.87e-01, Avg Ci2: 0.00013111894973507598, Avg lambda2: 0.7273376036527692 
+Fe - Avg Ci: 4.75e-04, Avg lambda: 9.75e-01, Avg Ci2: 0.000349909355956054, Avg lambda2: 0.7188474062008874 
+K - Avg Ci: 4.66e-03, Avg lambda: 8.58e-01, Avg Ci2: 0.0034368626631028944, Avg lambda2: 0.632375328990963 
+Mg - Avg Ci: 1.30e-03, Avg lambda: 2.08e-01, Avg Ci2: 0.00095878136292849, Avg lambda2: 0.15318830392693097 
+Na - Avg Ci: 4.73e-03, Avg lambda: 1.31e-01, Avg Ci2: 0.0034880555889596487, Avg lambda2: 0.09623806998390363 
+P - Avg Ci: 6.15e-03, Avg lambda: 5.16e-01, Avg Ci2: 0.004529918197595703, Avg lambda2: 0.3805937327560682 
+S - Avg Ci: 4.49e-03, Avg lambda: 6.05e-01, Avg Ci2: 0.003309434883275291, Avg lambda2: 0.4460300748636259 
+Zn - Avg Ci: 2.30e-04, Avg lambda: 9.89e-01, Avg Ci2: 0.00016976447275988477, Avg lambda2: 0.7290798807278179 
+Ca - Avg Ci: 4.28e-04, Avg lambda: 8.57e-01, Avg Ci2: 0.00029063168615651124, Avg lambda2: 0.5817241232994792 
+Cl - Avg Ci: 3.29e-03, Avg lambda: 6.35e-01, Avg Ci2: 0.0022328184526383297, Avg lambda2: 0.4309416163176982 
+Cr - Avg Ci: 1.29e-04, Avg lambda: 9.47e-01, Avg Ci2: 8.748112053092237e-05, Avg lambda2: 0.6429050490530529 
+Cu - Avg Ci: 1.72e-04, Avg lambda: 9.82e-01, Avg Ci2: 0.00011688694731532564, Avg lambda2: 0.6668589025943927 
+Fe - Avg Ci: 5.00e-04, Avg lambda: 9.67e-01, Avg Ci2: 0.00033967166373284315, Avg lambda2: 0.6563029933487483 
+K - Avg Ci: 5.27e-03, Avg lambda: 8.14e-01, Avg Ci2: 0.0035764079237214576, Avg lambda2: 0.552422952591095 
+Mg - Avg Ci: 1.50e-03, Avg lambda: 1.56e-01, Avg Ci2: 0.0010210870399606682, Avg lambda2: 0.10568920923234126 
+Na - Avg Ci: 5.39e-03, Avg lambda: 9.71e-02, Avg Ci2: 0.0036606595849520275, Avg lambda2: 0.06593882029310381 
+P - Avg Ci: 7.28e-03, Avg lambda: 4.27e-01, Avg Ci2: 0.004940818153611457, Avg lambda2: 0.28971143507561614 
+S - Avg Ci: 5.21e-03, Avg lambda: 5.19e-01, Avg Ci2: 0.003534307294489777, Avg lambda2: 0.3520629021198252 
+Zn - Avg Ci: 2.26e-04, Avg lambda: 9.85e-01, Avg Ci2: 0.00015344028029201935, Avg lambda2: 0.6690328514663038 
+Ca - Avg Ci: 4.32e-04, Avg lambda: 8.47e-01, Avg Ci2: 0.0003325183561752742, Avg lambda2: 0.6519442333537282 
+Cl - Avg Ci: 3.35e-03, Avg lambda: 6.15e-01, Avg Ci2: 0.002582683585526448, Avg lambda2: 0.47360643972797606 
+Cr - Avg Ci: 1.27e-04, Avg lambda: 9.43e-01, Avg Ci2: 9.7545987236974e-05, Avg lambda2: 0.7259467640188392 
+Cu - Avg Ci: 1.70e-04, Avg lambda: 9.81e-01, Avg Ci2: 0.00013077257969032444, Avg lambda2: 0.755154398542778 
+Fe - Avg Ci: 5.08e-04, Avg lambda: 9.64e-01, Avg Ci2: 0.0003910065365107743, Avg lambda2: 0.7422675317390032 
+K - Avg Ci: 5.36e-03, Avg lambda: 8.01e-01, Avg Ci2: 0.004125538371666899, Avg lambda2: 0.616820830764166 
+Mg - Avg Ci: 1.54e-03, Avg lambda: 1.46e-01, Avg Ci2: 0.0011819452756952084, Avg lambda2: 0.11262886555954886 
+Na - Avg Ci: 5.54e-03, Avg lambda: 9.13e-02, Avg Ci2: 0.004266821098580146, Avg lambda2: 0.07031269265108067 
+P - Avg Ci: 7.45e-03, Avg lambda: 4.06e-01, Avg Ci2: 0.005737414157467015, Avg lambda2: 0.31263338537847984 
+S - Avg Ci: 5.36e-03, Avg lambda: 4.97e-01, Avg Ci2: 0.004128433328614391, Avg lambda2: 0.38290783843276643 
+Zn - Avg Ci: 2.23e-04, Avg lambda: 9.84e-01, Avg Ci2: 0.0001715708460077566, Avg lambda2: 0.7578114473379854 
+Ca - Avg Ci: 3.94e-04, Avg lambda: 9.14e-01, Avg Ci2: 0.0002981469454061809, Avg lambda2: 0.69107726386603 
+Cl - Avg Ci: 3.05e-03, Avg lambda: 7.62e-01, Avg Ci2: 0.002306724179762781, Avg lambda2: 0.5759589589951387 
+Cr - Avg Ci: 1.51e-04, Avg lambda: 9.69e-01, Avg Ci2: 0.00011432839551687326, Avg lambda2: 0.732727449011886 
+Cu - Avg Ci: 1.96e-04, Avg lambda: 9.90e-01, Avg Ci2: 0.00014813635572349156, Avg lambda2: 0.748402626334328 
+Fe - Avg Ci: 4.91e-04, Avg lambda: 9.81e-01, Avg Ci2: 0.0003711015377534793, Avg lambda2: 0.741536003946881 
+K - Avg Ci: 4.51e-03, Avg lambda: 8.86e-01, Avg Ci2: 0.003408017903433066, Avg lambda2: 0.6702196824619644 
+Mg - Avg Ci: 1.13e-03, Avg lambda: 2.62e-01, Avg Ci2: 0.000857035657656353, Avg lambda2: 0.19784128454940583 
+Na - Avg Ci: 4.13e-03, Avg lambda: 1.67e-01, Avg Ci2: 0.003123801648293391, Avg lambda2: 0.12614638539614165 
+P - Avg Ci: 5.56e-03, Avg lambda: 5.87e-01, Avg Ci2: 0.004201853738057465, Avg lambda2: 0.44382102081490715 
+S - Avg Ci: 4.14e-03, Avg lambda: 6.69e-01, Avg Ci2: 0.0031275429185741842, Avg lambda2: 0.5059954507625878 
+Zn - Avg Ci: 2.51e-04, Avg lambda: 9.92e-01, Avg Ci2: 0.00018999416874130012, Avg lambda2: 0.7498089178109969 
+Ca - Avg Ci: 3.99e-04, Avg lambda: 8.92e-01, Avg Ci2: 0.0002929329388483427, Avg lambda2: 0.6544765232453785 
+Cl - Avg Ci: 3.08e-03, Avg lambda: 7.09e-01, Avg Ci2: 0.0022570434865852042, Avg lambda2: 0.5204766510873128 
+Cr - Avg Ci: 1.35e-04, Avg lambda: 9.61e-01, Avg Ci2: 9.899188940527945e-05, Avg lambda2: 0.705066182007066 
+Cu - Avg Ci: 1.77e-04, Avg lambda: 9.87e-01, Avg Ci2: 0.00013021352795231282, Avg lambda2: 0.7243806301798702 
+Fe - Avg Ci: 4.74e-04, Avg lambda: 9.75e-01, Avg Ci2: 0.0003481201160235988, Avg lambda2: 0.7159015803338261 
+K - Avg Ci: 4.67e-03, Avg lambda: 8.58e-01, Avg Ci2: 0.0034268081586166245, Avg lambda2: 0.6295507361354186 
+Mg - Avg Ci: 1.30e-03, Avg lambda: 2.07e-01, Avg Ci2: 0.0009569157609916151, Avg lambda2: 0.1516853139610778 
+Na - Avg Ci: 4.74e-03, Avg lambda: 1.30e-01, Avg Ci2: 0.003482010376720568, Avg lambda2: 0.09515076580691917 
+P - Avg Ci: 6.16e-03, Avg lambda: 5.15e-01, Avg Ci2: 0.004518663253758063, Avg lambda2: 0.3782438933215383 
+S - Avg Ci: 4.50e-03, Avg lambda: 6.04e-01, Avg Ci2: 0.003300804678966774, Avg lambda2: 0.4435325107644787 
+Zn - Avg Ci: 2.30e-04, Avg lambda: 9.89e-01, Avg Ci2: 0.00016865965972120221, Avg lambda2: 0.7261206348457475 
+Ca - Avg Ci: 4.28e-04, Avg lambda: 8.56e-01, Avg Ci2: 0.000287692589104336, Avg lambda2: 0.5750765883138 
+Cl - Avg Ci: 3.29e-03, Avg lambda: 6.33e-01, Avg Ci2: 0.0022119037850832197, Avg lambda2: 0.42503962631320596 
+Cr - Avg Ci: 1.28e-04, Avg lambda: 9.47e-01, Avg Ci2: 8.60635573856436e-05, Avg lambda2: 0.6360030774652118 
+Cu - Avg Ci: 1.71e-04, Avg lambda: 9.82e-01, Avg Ci2: 0.00011507698380621158, Avg lambda2: 0.6598630344337277 
+Fe - Avg Ci: 4.99e-04, Avg lambda: 9.67e-01, Avg Ci2: 0.0003352909663940384, Avg lambda2: 0.6493481360708012 
+K - Avg Ci: 5.28e-03, Avg lambda: 8.13e-01, Avg Ci2: 0.0035495629663823223, Avg lambda2: 0.5459056818420869 
+Mg - Avg Ci: 1.51e-03, Avg lambda: 1.53e-01, Avg Ci2: 0.0010156225425911793, Avg lambda2: 0.10299277761057445 
+Na - Avg Ci: 5.42e-03, Avg lambda: 9.54e-02, Avg Ci2: 0.0036428265369169268, Avg lambda2: 0.0641159786408089 
+P - Avg Ci: 7.31e-03, Avg lambda: 4.24e-01, Avg Ci2: 0.004910714981654568, Avg lambda2: 0.28476229568365913 
+S - Avg Ci: 5.22e-03, Avg lambda: 5.16e-01, Avg Ci2: 0.003507980633315033, Avg lambda2: 0.34665028234005807 
+Zn - Avg Ci: 2.25e-04, Avg lambda: 9.85e-01, Avg Ci2: 0.0001511790327528602, Avg lambda2: 0.662028607286805 
+Ca - Avg Ci: 4.32e-04, Avg lambda: 8.47e-01, Avg Ci2: 0.0003325183561752742, Avg lambda2: 0.6519442333537282 
+Cl - Avg Ci: 3.35e-03, Avg lambda: 6.15e-01, Avg Ci2: 0.002582683585526448, Avg lambda2: 0.47360643972797606 
+Cr - Avg Ci: 1.27e-04, Avg lambda: 9.43e-01, Avg Ci2: 9.7545987236974e-05, Avg lambda2: 0.7259467640188392 
+Cu - Avg Ci: 1.70e-04, Avg lambda: 9.81e-01, Avg Ci2: 0.00013077257969032444, Avg lambda2: 0.755154398542778 
+Fe - Avg Ci: 5.08e-04, Avg lambda: 9.64e-01, Avg Ci2: 0.0003910065365107743, Avg lambda2: 0.7422675317390032 
+K - Avg Ci: 5.36e-03, Avg lambda: 8.01e-01, Avg Ci2: 0.004125538371666899, Avg lambda2: 0.616820830764166 
+Mg - Avg Ci: 1.54e-03, Avg lambda: 1.46e-01, Avg Ci2: 0.0011819452756952084, Avg lambda2: 0.11262886555954886 
+Na - Avg Ci: 5.54e-03, Avg lambda: 9.13e-02, Avg Ci2: 0.004266821098580146, Avg lambda2: 0.07031269265108067 
+P - Avg Ci: 7.45e-03, Avg lambda: 4.06e-01, Avg Ci2: 0.005737414157467015, Avg lambda2: 0.31263338537847984 
+S - Avg Ci: 5.36e-03, Avg lambda: 4.97e-01, Avg Ci2: 0.004128433328614391, Avg lambda2: 0.38290783843276643 
+Zn - Avg Ci: 2.23e-04, Avg lambda: 9.84e-01, Avg Ci2: 0.0001715708460077566, Avg lambda2: 0.7578114473379854 

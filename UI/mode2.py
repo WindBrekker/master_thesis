@@ -18,3 +18,6 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = new_window.NewWindow()
     sys.exit(app.exec())
+    
+    # Pandas - dane będą głównie w tabeli.
+     

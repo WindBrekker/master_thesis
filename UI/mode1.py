@@ -74,6 +74,7 @@ def main(window, start_window_instance, title, main_folder_path, pixel_size_valu
     window.next_element_button.setDisabled(True)
     window.use_for_mask_button.clicked.connect(lambda: utils.use_for_mask(window))
     window.colorbar_combobox.activated.connect(lambda: utils.colorbox(window))
+    utils.colorbox(window)
     window.prefere_folder_combobox.activated.connect(lambda: utils.box_folder_changed(window, zeropeak_name, scatter_name, spectrum, main_folder_path, treshhold_value))
     window.quantify_button.clicked.connect(lambda: quantify.quantify(window, main_folder_path, pixel_size_value, inputfile_name, zeropeak_name, scatter_name, sample_matrix_name, treshhold_value, spectrum, zeropeak_coefficients_name, scatter_coefficients_name))
     window.confirm_saving_button.clicked.connect(lambda: utils.save_quantification_data(window))

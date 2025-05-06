@@ -20,6 +20,12 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 import matplotlib.pyplot as plt
 import plotly.express as px
+import logging
+
+logging.basicConfig(
+    filename='quantify.log', 
+    level=logging.DEBUG
+    )
 
 
 def colorbox(window):
@@ -59,6 +65,9 @@ def previous_element_for_mask(window, threshold):
 
         window.sample_picture_label.setPixmap(canvas1.grab())
         window.sample_picture_label2.setPixmap(canvas2.grab())
+        
+        plt.close(figure1)
+        plt.close(figure2)
 
     except IndexError:
         print("No previous element.")
@@ -91,6 +100,8 @@ def next_element_for_mask(window, threshold):
 
         window.sample_picture_label.setPixmap(canvas1.grab())
         window.sample_picture_label2.setPixmap(canvas2.grab())
+        plt.close(figure1)
+        plt.close(figure2)
 
     except IndexError:
         print("No next element.")
@@ -124,6 +135,8 @@ def next_ci_map(window):
 
         window.sample_picture_label.setPixmap(canvas1.grab())
         window.sample_picture_label2.setPixmap(canvas2.grab())
+        plt.close(figure1)
+        plt.close(figure2)
 
     except IndexError:
         print("No next element.")
@@ -155,6 +168,8 @@ def previous_ci_map(window):
 
         window.sample_picture_label.setPixmap(canvas1.grab())
         window.sample_picture_label2.setPixmap(canvas2.grab())
+        plt.close(figure1)
+        plt.close(figure2)
 
     except IndexError:
         print("No pervious element.")
@@ -207,8 +222,10 @@ def load_scatter_file(main_folder_path, scatter_coefficients_name, window):
     folder = Path(main_folder_path)
     if os.path.exists(folder.joinpath(scatter_coefficients_name + ".txt")):
         scatter_coefficients_name = scatter_coefficients_name + ".txt"
+        print(f"reading {scatter_coefficients_name} file")
     elif os.path.exists(folder.joinpath(scatter_coefficients_name + ".csv")):
         scatter_coefficients_name = scatter_coefficients_name + ".csv"
+        print(f"reading {scatter_coefficients_name} file")
     else:
         raise FileNotFoundError(f"File not found: {scatter_coefficients_name}.txt or {scatter_coefficients_name}.csv")
     
@@ -240,6 +257,10 @@ def load_sample_matrix_file(main_folder_path, sample_matrix_name, window):
 def box_folder_changed(window, zeropeak_name, scater_name, spectrum, main_folder_path, treshold):
     window.previous_element_button.setEnabled(True)
     window.next_element_button.setEnabled(True)
+    window.previous_element_button.clicked.connect(lambda: previous_element_for_mask(window, treshold))
+    window.next_element_button.clicked.connect(lambda: next_element_for_mask(window, treshold))
+    window.previous_element_button.clicked.disconnect()
+    window.next_element_button.clicked.disconnect()
     window.previous_element_button.clicked.connect(lambda: previous_element_for_mask(window, treshold))
     window.next_element_button.clicked.connect(lambda: next_element_for_mask(window, treshold))
     current_folder = str(window.prefere_folder_combobox.currentText())
@@ -301,19 +322,41 @@ def change_folder(window, main_folder_path, scater_name, zeropeak_name, spectrum
     
     mask_number_of_counts = file_to_list(Path.joinpath(window.subfolder_path, f"{window.prename}{element_for_mask}"))
 
-    figure, ax = plt.subplots()
-    canvas = FigureCanvas(figure)
-    canvas2 = FigureCanvas(figure)
+    # figure, ax = plt.subplots()
+    # canvas = FigureCanvas(figure)
+    # canvas2 = FigureCanvas(figure)
 
-    im = ax.imshow(window.mask, cmap=window.color_of_heatmap, interpolation="nearest")
-    im2 = ax.imshow(mask_number_of_counts, cmap=window.color_of_heatmap, interpolation="nearest")
+    # im = ax.imshow(window.mask, cmap=window.color_of_heatmap, interpolation="nearest")
+    # im2 = ax.imshow(mask_number_of_counts, cmap=window.color_of_heatmap, interpolation="nearest")
 
-    canvas.draw()
+    # canvas.draw()
+    # canvas2.draw()
+    # plt.colorbar(im, ax=ax)
+    # plt.colorbar(im2, ax=ax)
+    # window.sample_picture_label.setPixmap(canvas.grab())
+    # window.sample_picture_label2.setPixmap(canvas2.grab())
+    # plt.close(figure)
+    
+    
+    color = window.color_of_heatmap
+
+    figure1, ax1 = plt.subplots()
+    canvas1 = FigureCanvas(figure1)
+    im1 = ax1.imshow(window.mask, cmap=color, interpolation="nearest")
+    plt.colorbar(im1, ax=ax1)
+
+    figure2, ax2 = plt.subplots()
+    canvas2 = FigureCanvas(figure2)
+    im2 = ax2.imshow(mask_number_of_counts, cmap=color, interpolation="nearest")
+
+    plt.colorbar(im2, ax=ax2)
+    canvas1.draw()
     canvas2.draw()
-    plt.colorbar(im, ax=ax)
-    plt.colorbar(im2, ax=ax)
-    window.sample_picture_label.setPixmap(canvas.grab())
+
+    window.sample_picture_label.setPixmap(canvas1.grab())
     window.sample_picture_label2.setPixmap(canvas2.grab())
+    plt.close(figure1)
+    plt.close(figure2)
 
     
 def calculate_livetime(zeropeak_name, zeropeak_dict, window):
@@ -379,6 +422,9 @@ def mask_creating(element, output_path, folder_path, prename, treshold, color):
     maxof_masktable = np.max(table_of_mask)
     procent = float(treshold) / 100
     mask = np.where(table_of_mask < (procent * maxof_masktable), 0, 1)
+    logging.info(f"Mask file path: {file_path} and average: {np.mean(table_of_mask)}")
+    logging.info(f"Mask mean: {np.mean(mask)}")
+    
 
     output_to_file(mask, Path.joinpath(output_path, f"mask"))
     output_to_file(table_of_mask, Path.joinpath(output_path, "mask_noc"))
@@ -393,8 +439,8 @@ def mask_creating(element, output_path, folder_path, prename, treshold, color):
     plt.colorbar()
     plt.savefig(Path.joinpath(output_path, "mask_noc.png"))
     plt.close()
-
     return mask
+
 
 def antimask_creating(element, output_path, folder_path, prename, treshold, color):
     file_path = Path.joinpath(folder_path, f"{prename}{element}")
@@ -427,6 +473,7 @@ def SampSM_calc(input, a, b):
         raise TypeError(f"Parameter 'b' must be an int or float. Received: value: {b} with type {type(b)}")
     
     output = np.maximum(a * input + b, 0)
+    logging.info(f"Sample mass calculation: a: {a}, b: {b}. output mean: {np.mean(output)}")
     return output.tolist()
 
 def absorption_coefficient(sample_dict, Ee):
