@@ -1,73 +1,76 @@
 import sys
-from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QProgressBar, QPushButton, QDialog, QHBoxLayout, QLabel
-from PyQt6.QtCore import Qt, QThread, pyqtSignal
+import numpy as np
+import matplotlib.pyplot as plt
+from PyQt6.QtWidgets import (
+    QApplication, QMainWindow, QVBoxLayout, QWidget, QLabel
+)
+from matplotlib.backends.backend_qt5agg import (
+    FigureCanvasQTAgg as FigureCanvas,
+    NavigationToolbar2QT as NavigationToolbar
+)
+from matplotlib.figure import Figure
 
-class WorkerThread(QThread):
-    progress_signal = pyqtSignal(int)  # Signal to send progress updates
-
-    def __init__(self, indices):
-        super().__init__()
-        self.indices = indices
-
-    def run(self):
-        for i in range(len(self.indices)):
-            # Simulating work, replace with actual work code
-            self.progress_signal.emit(int((i + 1) / len(self.indices) * 100))
-
-class ProgressDialog(QDialog):
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.setWindowTitle("Processing...")
-        self.setModal(True)  # Make the dialog modal to block interaction with other windows
-        self.setGeometry(300, 300, 400, 100)
-
-        # Set up the layout and widgets for the progress dialog
-        layout = QVBoxLayout()
-
-        self.label = QLabel("Processing...", self)
-        self.progress_bar = QProgressBar(self)
-        self.progress_bar.setRange(0, 100)
-        self.progress_bar.setAlignment(Qt.AlignmentFlag.AlignCenter)
-
-        layout.addWidget(self.label)
-        layout.addWidget(self.progress_bar)
-        
-        self.setLayout(layout)
-
-    def update_progress(self, value):
-        self.progress_bar.setValue(value)
-
-class MyWindow(QWidget):
+class HeatmapApp(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Processing with Progress Bar")
-        self.setGeometry(100, 100, 400, 100)
 
-        # Set up the UI layout and widgets
-        layout = QVBoxLayout()
-        
-        self.start_button = QPushButton("Start Processing", self)
-        self.start_button.clicked.connect(self.start_processing)
+        self.setWindowTitle('Zoomable Heatmap with Mean')
+        self.setGeometry(100, 100, 800, 600)
 
-        layout.addWidget(self.start_button)
+        # Main widget
+        widget = QWidget(self)
+        layout = QVBoxLayout(widget)
 
-        self.setLayout(layout)
+        # Mean label
+        self.mean_label = QLabel("Mean of visible region: ", self)
+        layout.addWidget(self.mean_label)
 
-    def start_processing(self):
-        indices = list(range(32000))  # Example indices for processing (32,000 elements)
+        # Create figure & canvas
+        self.figure = Figure()
+        self.canvas = FigureCanvas(self.figure)
+        self.ax = self.figure.add_subplot(111)
 
-        # Create the progress dialog
-        self.progress_dialog = ProgressDialog(self)
-        self.progress_dialog.show()
+        # Generate heatmap data
+        self.data = np.random.rand(100, 100)
 
-        # Create the worker thread and connect its progress signal to update the progress bar
-        self.worker = WorkerThread(indices)
-        self.worker.progress_signal.connect(self.progress_dialog.update_progress)
-        self.worker.finished.connect(self.progress_dialog.accept)  # Close the dialog when finished
-        self.worker.start()
+        # Plot heatmap
+        self.heatmap = self.ax.imshow(self.data, cmap='viridis', interpolation='nearest')
+        self.figure.colorbar(self.heatmap)
 
-if __name__ == "__main__":
+        # Toolbar for zoom/pan
+        layout.addWidget(NavigationToolbar(self.canvas, self))
+        layout.addWidget(self.canvas)
+
+        # Connect to zoom/pan events
+        self.canvas.mpl_connect('draw_event', self.update_mean_on_zoom)
+
+        # Finalize layout
+        self.setCentralWidget(widget)
+
+    def update_mean_on_zoom(self, event):
+        # Get current view limits
+        x0, x1 = self.ax.get_xlim()
+        y0, y1 = self.ax.get_ylim()
+
+        # Convert to integer indices
+        x0, x1 = int(np.floor(x0)), int(np.ceil(x1))
+        y0, y1 = int(np.floor(y0)), int(np.ceil(y1))
+
+        # Clip to valid range
+        x0, x1 = np.clip([x0, x1], 0, self.data.shape[1])
+        y0, y1 = np.clip([y0, y1], 0, self.data.shape[0])
+
+        # Slice visible data
+        visible_data = self.data[y0:y1, x0:x1]
+
+        if visible_data.size > 0:
+            mean_val = visible_data.mean()
+            self.mean_label.setText(f"Mean of visible region: {mean_val:.4f}")
+        else:
+            self.mean_label.setText("Mean of visible region: N/A")
+
+if __name__ == '__main__':
     app = QApplication(sys.argv)
-    window = MyWindow()
+    window = HeatmapApp()
     window.show()
     sys.exit(app.exec())

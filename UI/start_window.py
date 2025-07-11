@@ -1,6 +1,6 @@
 # start_window.py
 import sys
-from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QVBoxLayout, QWidget, QLabel, QLineEdit, QCheckBox, QHBoxLayout
+from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QVBoxLayout, QWidget, QLabel, QLineEdit, QCheckBox, QHBoxLayout,QMessageBox
 import utils
 import mode3
 import mode2
@@ -49,21 +49,23 @@ class StartWindow(QMainWindow):
         
         # Create buttons
         self.button1 = QPushButton(self.mode1)
-        
+        readme_button = QPushButton("README / Help")
         
         self.button1.setCheckable(True)
         self.button2 = QPushButton(self.mode2)
         self.button2.setCheckable(True)
-        self.button3 = QPushButton(self.mode3)
-        self.button3.setCheckable(True)
+        # self.button3 = QPushButton(self.mode3)
+        # self.button3.setCheckable(True)
         self.next_button = QPushButton("Next")
         self.next_button.setDisabled(True)
         
         # Connect buttons to the methods
         self.button1.clicked.connect(self.open_window1)
         self.button2.clicked.connect(self.open_window2)
-        self.button3.clicked.connect(self.open_window3)
+        # self.button3.clicked.connect(self.open_window3)
         self.next_button.clicked.connect(self.open_next_window)
+        readme_button.clicked.connect(self.show_readme)
+        
         
         # Create label
         self.start_window_label = QLabel("Choose the work mode")
@@ -86,11 +88,12 @@ class StartWindow(QMainWindow):
         self.SampMatrix = QLineEdit(self)
         self.SampMatrix.setPlaceholderText("sample_matrix")
         self.Treshold = QLineEdit(self)
+        self.Treshold.setPlaceholderText("10")
         self.Scater_Coefficients = QLineEdit(self)
         self.Scater_Coefficients.setPlaceholderText("scater_coefficients")
         self.Zeropeak_Coefficients = QLineEdit(self)
         self.Zeropeak_Coefficients.setPlaceholderText("zeropeak_coefficients")
-        self.Treshold.setPlaceholderText("10")
+        
         
         # Checkboxes
         self.checkbox1 = ToggleSwitch()
@@ -107,7 +110,7 @@ class StartWindow(QMainWindow):
         layout.addWidget(self.start_window_label)
         layout.addWidget(self.button1)
         layout.addWidget(self.button2)
-        layout.addWidget(self.button3)
+        # layout.addWidget(self.button3)
         layout.addWidget(self.checkbox_label)
         layout.addLayout(sublayout)
         layout.addWidget(self.input_info_label)
@@ -121,6 +124,7 @@ class StartWindow(QMainWindow):
         layout.addWidget(self.SampMatrix)
         layout.addWidget(self.Treshold)
         layout.addWidget(self.next_button)
+        layout.addWidget(readme_button)
         
         
 
@@ -149,14 +153,14 @@ class StartWindow(QMainWindow):
         self.mode_number = 1
         self.button1.setChecked(True)
         self.button2.setChecked(False)
-        self.button3.setChecked(False)
+        # self.button3.setChecked(False)
         self.next_button.setDisabled(False)
 
     def open_window2(self):
         self.mode_number = 2
         self.button1.setChecked(False)
         self.button2.setChecked(True)
-        self.button3.setChecked(False)
+        # self.button3.setChecked(False)
         self.next_button.setDisabled(False)
 
         
@@ -166,8 +170,22 @@ class StartWindow(QMainWindow):
         self.mode_number = 3
         self.button1.setChecked(False)
         self.button2.setChecked(False)
-        self.button3.setChecked(True)
+        # self.button3.setChecked(True)
         self.next_button.setDisabled(False)
+        
+    def show_readme(self):
+        instructions = (
+            "Welcome to the App!\n\n"
+            "Instructions:\n"
+            "1. Choose the work mode by clicking on the buttons.\n"
+            "2. Enter the appropriate values in the input fields.\n"
+            "3. If you are using the Polichromatic spectrum, enter the zero peak and scatter coefficients.\n"
+            "4. If you are using the Monochromatic spectrum, leave the zero peak and scatter coefficients fields empty.\n"
+            "5. Data shall be organised as follows:\n"
+            "   - Main folder containing all datasets in separated subfolders, inputfile, sample_matrix, scatter and/or zeropeak coefficients\n"
+            "   - - Subfolders with element-separated data matrix, scatter matrix and/or zeropeak matrix .\n"
+        )
+        QMessageBox.information(self, "How to Use", instructions)
 
 
         

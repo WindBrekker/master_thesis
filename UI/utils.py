@@ -1,5 +1,4 @@
 import sys
-import shutil
 import os
 import numpy as np
 from pathlib import Path
@@ -7,13 +6,7 @@ from os.path import exists as file_exists
 from PyQt6.QtGui import QPalette, QColor, QIcon, QAction, QPixmap
 from PyQt6.QtWidgets import QApplication, QMessageBox
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-import new_window
-import mode1
-import mode2
-import mode3
-import start_window
 import matplotlib.pyplot as plt
-from tqdm import tqdm
 import xraylib as xr
 import math
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
@@ -27,9 +20,58 @@ logging.basicConfig(
     level=logging.DEBUG
     )
 
-
 def colorbox(window):
     window.color_of_heatmap = str(window.colorbar_combobox.currentText())
+    
+def update_tresh(window):
+    window.treshold = window.Treshold.text()
+    element_for_mask = window.elements_in_subfolder[window.index_of_element]
+    print("Element for mask: ", element_for_mask)
+    window.mask = mask_creating(window,element_for_mask, window.output_path, window.subfolder_path, window.prename, window.treshold, window.color_of_heatmap)
+    window.antimask = antimask_creating(window,element_for_mask, window.output_path, window.subfolder_path, window.prename, window.treshold, window.color_of_heatmap)
+    mask_number_of_counts = file_to_list(Path.joinpath(window.output_path, "mask_noc"))
+    
+    color = window.color_of_heatmap
+
+    figure1, ax1 = plt.subplots()
+    canvas1 = FigureCanvas(figure1)
+    im1 = ax1.imshow(window.mask, cmap=color, interpolation="nearest")
+    plt.colorbar(im1, ax=ax1)
+
+    figure2, ax2 = plt.subplots()
+    canvas2 = FigureCanvas(figure2)
+    im2 = ax2.imshow(mask_number_of_counts, cmap=color, interpolation="nearest")
+
+    plt.colorbar(im2, ax=ax2)
+    canvas1.draw()
+    canvas2.draw()
+
+    window.sample_picture_label.setPixmap(canvas1.grab())
+    window.sample_picture_label2.setPixmap(canvas2.grab())
+    plt.close(figure1)
+    plt.close(figure2) 
+    
+    
+def update_figure(window, first_plot, second_plot):
+    color = window.color_of_heatmap
+
+    figure1, ax1 = plt.subplots()
+    canvas1 = FigureCanvas(figure1)
+    im1 = ax1.imshow(first_plot, cmap=color, interpolation="nearest")
+    plt.colorbar(im1, ax=ax1)
+
+    figure2, ax2 = plt.subplots()
+    canvas2 = FigureCanvas(figure2)
+    im2 = ax2.imshow(second_plot, cmap=color, interpolation="nearest")
+
+    plt.colorbar(im2, ax=ax2)
+    canvas1.draw()
+    canvas2.draw()
+
+    window.sample_picture_label.setPixmap(canvas1.grab())
+    window.sample_picture_label2.setPixmap(canvas2.grab())
+    plt.close(figure1)
+    plt.close(figure2)
 
 def use_for_mask(window):
     window.element_for_mask = str(window.element_name_label.text())
@@ -44,8 +86,8 @@ def previous_element_for_mask(window, threshold):
         window.element_name_label.setText(element_for_mask)
         
         
-        window.mask = mask_creating(element_for_mask, window.output_path, window.subfolder_path, window.prename, threshold, window.color_of_heatmap)
-        window.antimask = mask_creating(element_for_mask, window.output_path, window.subfolder_path, window.prename, threshold, window.color_of_heatmap)
+        window.mask = mask_creating(window, element_for_mask, window.output_path, window.subfolder_path, window.prename, window.treshold, window.color_of_heatmap)
+        window.antimask = antimask_creating(window, element_for_mask, window.output_path, window.subfolder_path, window.prename, window.treshold, window.color_of_heatmap)
         mask_number_of_counts = file_to_list(Path.joinpath(window.output_path, "mask_noc"))
         
         color = window.color_of_heatmap
@@ -71,6 +113,7 @@ def previous_element_for_mask(window, threshold):
 
     except IndexError:
         print("No previous element.")
+        window.index_of_element -= 1
                
 def next_element_for_mask(window, threshold):
     try:
@@ -79,8 +122,8 @@ def next_element_for_mask(window, threshold):
         window.element_name_label.setText(element_for_mask)
 
         print("Element for mask: ", element_for_mask)
-        window.mask = mask_creating(element_for_mask, window.output_path, window.subfolder_path, window.prename, threshold, window.color_of_heatmap)
-        window.antimask = mask_creating(element_for_mask, window.output_path, window.subfolder_path, window.prename, threshold, window.color_of_heatmap)
+        window.mask = mask_creating(window,element_for_mask, window.output_path, window.subfolder_path, window.prename, window.treshold, window.color_of_heatmap)
+        window.antimask = antimask_creating(window,element_for_mask, window.output_path, window.subfolder_path, window.prename, window.treshold, window.color_of_heatmap)
         mask_number_of_counts = file_to_list(Path.joinpath(window.output_path, "mask_noc"))
         
         color = window.color_of_heatmap
@@ -105,11 +148,13 @@ def next_element_for_mask(window, threshold):
 
     except IndexError:
         print("No next element.")
+        window.index_of_element -= 1
 
  
 def next_ci_map(window):
     try:
         window.index_of_element += 1
+        print("Index of element: ", window.index_of_element)
         element = window.elements_in_subfolder[window.index_of_element]
         window.element_name_label.setText(element)
 
@@ -140,11 +185,16 @@ def next_ci_map(window):
 
     except IndexError:
         print("No next element.")
+        window.index_of_element -= 1
+        print("Index of element: ", window.index_of_element)
         
 def previous_ci_map(window):
     try:
         window.index_of_element -= 1
+        print("Index of element: ", window.index_of_element)
         element = window.elements_in_subfolder[window.index_of_element]
+        window.element_name_label.setText(element)
+        
         
         print("Ci map of element: ", element)
         Ci_table = file_to_list(Path.joinpath(window.temporary_folder, f"{element}_Ci_table"))
@@ -173,11 +223,15 @@ def previous_ci_map(window):
 
     except IndexError:
         print("No pervious element.")
+        window.index_of_element -= 1
+        print("Index of element: ", window.index_of_element)
+        
 
     
 def load_input_files(main_folder_path, inputfile_name, window):
     print("Loading inputfiles... ")
     folder = Path(main_folder_path)
+    window.treshold = 10
     if os.path.exists(folder.joinpath(inputfile_name + ".txt")):
         inputfile_name = inputfile_name + ".txt"
         #print(f"{folder.joinpath(inputfile_name)} found.")
@@ -264,7 +318,7 @@ def box_folder_changed(window, zeropeak_name, scater_name, spectrum, main_folder
     window.previous_element_button.clicked.connect(lambda: previous_element_for_mask(window, treshold))
     window.next_element_button.clicked.connect(lambda: next_element_for_mask(window, treshold))
     current_folder = str(window.prefere_folder_combobox.currentText())
-    #print(f"Current Folder selected From QCombobox: {current_folder}")
+    print(f"Current Folder selected From QCombobox: {current_folder}")
     change_folder(window, main_folder_path, scater_name, zeropeak_name, spectrum, current_folder, treshold)
     
 def change_folder(window, main_folder_path, scater_name, zeropeak_name, spectrum, current_folder, treshold):
@@ -272,13 +326,14 @@ def change_folder(window, main_folder_path, scater_name, zeropeak_name, spectrum
     window.elements_in_subfolder = []
     window.index_of_element = 0
     current_folder = window.current_folder_name
-    #print(f"Current Folder selected: {current_folder}")
+    print(f"Current Folder selected: {current_folder}")
     main_folder_path = Path(main_folder_path)
     
     window.subfolder_path = Path.joinpath(main_folder_path, current_folder)
     subfolder_insides = os.listdir(window.subfolder_path)
     window.elements_in_subfolder.clear()
     for file in subfolder_insides:
+        print("File in subfolder: ", file)
         element_line = file.rsplit("_", 1)[-1].split(".")[0]
         #print("Element line: ", element_line)
         element = element_line.split("-")[0]
@@ -293,8 +348,9 @@ def change_folder(window, main_folder_path, scater_name, zeropeak_name, spectrum
             window.elements_in_subfolder.append(element_line)
     prename_ = subfolder_insides[0].rsplit("_", 1)[0]
     window.prename = prename_ + "_"
-    #print("Folder selected.")
-    #print("Elements in subfolder: ", window.elements_in_subfolder)
+    print("Folder selected.")
+    print("Elements in subfolder: ", window.elements_in_subfolder)
+    
     
     if not Path.joinpath(main_folder_path, f"{current_folder}_output").exists():
         Path.joinpath(main_folder_path, f"{current_folder}_output").mkdir() 
@@ -315,9 +371,9 @@ def change_folder(window, main_folder_path, scater_name, zeropeak_name, spectrum
 
     
     #print("Element for mask: ", element_for_mask)
-    window.mask = mask_creating(element_for_mask, window.output_path, window.subfolder_path, window.prename, treshold, window.color_of_heatmap)
+    window.mask = mask_creating(window,element_for_mask, window.output_path, window.subfolder_path, window.prename, treshold, window.color_of_heatmap)
     print("Mask map calculated.")
-    window.antimask = mask_creating(element_for_mask, window.output_path, window.subfolder_path, window.prename, treshold, window.color_of_heatmap)
+    window.antimask = antimask_creating(window,element_for_mask, window.output_path, window.subfolder_path, window.prename, treshold, window.color_of_heatmap)
     print("Antimask map calculated.")
     
     mask_number_of_counts = file_to_list(Path.joinpath(window.subfolder_path, f"{window.prename}{element_for_mask}"))
@@ -357,6 +413,9 @@ def change_folder(window, main_folder_path, scater_name, zeropeak_name, spectrum
     window.sample_picture_label2.setPixmap(canvas2.grab())
     plt.close(figure1)
     plt.close(figure2)
+    
+    
+    window.Treshold.editingFinished.connect(lambda: update_tresh(window))
 
     
 def calculate_livetime(zeropeak_name, zeropeak_dict, window):
@@ -365,8 +424,11 @@ def calculate_livetime(zeropeak_name, zeropeak_dict, window):
     except Exception as e:
         print(f"Couldn't find data {Path.joinpath(window.subfolder_path, f"{window.prename}{zeropeak_name}")}: {e}")
     try:
-        window.livetime_matrix = np.array(LT_calc(window.zeropeak_matrix, float(zeropeak_dict["a"]), float(zeropeak_dict["b"])))
+        #window.livetime_matrix = np.array(LT_calc(window.zeropeak_matrix, float(zeropeak_dict["a"]), float(zeropeak_dict["b"])))
+        window.livetime_matrix = np.array(LT_calc(window.zeropeak_matrix, float(0), float(0.02)))
+        #window.livetime_matrix = window.livetime_matrix * 0.001 # Convert to milliseconds
         print("Livetime matrix calculated.")
+        print(window.livetime_matrix)
     except Exception as e:
         print(f"Couldn't calculate livetime matrix: {e}")
         print(f"Zeropeak dict type: {type(zeropeak_dict["a"])}, b: {type(zeropeak_dict["b"])}")
@@ -395,6 +457,7 @@ def file_to_list(input):
                 first_line = file.readline()
                 delimiter = ';' if ';' in first_line else ','
             converted_array = np.loadtxt(csv_path, delimiter=delimiter)
+            converted_array = np.fliplr(converted_array)  # Flip the array horizontally
             return np.array(converted_array)
         else:
             print(f"File not found: {txt_path} or {csv_path}")
@@ -411,16 +474,16 @@ def LT_calc(input, a, b):
     if not isinstance(b, (int, float)):
         raise TypeError(f"Parameter 'b' must be an int or float. Received: value: {b} with type {type(b)}")
     
-    return np.array(a * input + b)
+    return np.array((a * input) + b)
 
 def output_to_file(input, output):
     np.savetxt(f"{output}.txt", input, fmt='%.2e', delimiter=',')
 
-def mask_creating(element, output_path, folder_path, prename, treshold, color):
+def mask_creating(window, element, output_path, folder_path, prename, treshold, color):
     file_path = Path.joinpath(folder_path, f"{prename}{element}")
     table_of_mask = file_to_list(file_path)
     maxof_masktable = np.max(table_of_mask)
-    procent = float(treshold) / 100
+    procent = float(window.treshold) / 100
     mask = np.where(table_of_mask < (procent * maxof_masktable), 0, 1)
     logging.info(f"Mask file path: {file_path} and average: {np.mean(table_of_mask)}")
     logging.info(f"Mask mean: {np.mean(mask)}")
@@ -442,11 +505,11 @@ def mask_creating(element, output_path, folder_path, prename, treshold, color):
     return mask
 
 
-def antimask_creating(element, output_path, folder_path, prename, treshold, color):
+def antimask_creating(window, element, output_path, folder_path, prename, treshold, color):
     file_path = Path.joinpath(folder_path, f"{prename}{element}")
     table_of_mask = file_to_list(file_path)
     maxof_masktable = np.max(table_of_mask)
-    procent = float(treshold) / 100
+    procent = float(window.treshold) / 100
     mask = np.where(table_of_mask < (procent * maxof_masktable), 1, 0)
 
     output_to_file(mask, Path.joinpath(output_path, f"{prename}antimask"))
@@ -701,7 +764,7 @@ def SMi_saving_plot(input, path, element, pixel_size, color, size, extention):
     plt.close()
 
 def SM_saving_plot(input, path, pixel_size, color, size, extention):
-    unit = {1000: "_mg_g", 1000000: "_ug_g", 1: "_g_g", 1000000000: "_ng_g"}.get(size, "")
+    unit = {1000: "_mg_cm2", 1000000: "_ug_cm2", 1: "_g_cm2", 1000000000: "_ng_cm2"}.get(size, "")
     SM_table = np.array(input) * size
     width_um, height_um = SM_table.shape[1], SM_table.shape[0]
     plt.xlim(0, (width_um * float(pixel_size) / 1000))
